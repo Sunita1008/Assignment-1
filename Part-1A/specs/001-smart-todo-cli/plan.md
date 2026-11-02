@@ -75,13 +75,33 @@ write, and parse/version errors do not modify it.
    Clean up the temporary file on failure. If a safe replacement cannot be
    completed, preserve the old file and return the specified save error rather
    than falling back to a potentially partial write.
-5. **Keep test seams narrow.** Use a repository boundary for isolated task tests
-   and deterministic storage-failure injection; exercise the real JSON adapter
-   and CLI composition in integration tests. A test-only launcher supplies a
-   fixed clock for subprocess tests without adding a user-facing clock option.
+5. **Keep test seams narrow.** Use a repository boundary for isolated task
+   tests, and exercise the real JSON adapter and CLI composition in integration
+   tests.
 6. **Honor the explicit v1 contract.** Retain JSON-lines output and the one
    current-directory data file. Alternate paths and human-oriented table output
    are deferred; no command or dependency is added for excluded scope.
+
+### Test Seams
+
+- `com.smarttodo.cli.CommandRunner` has public constructors
+  `CommandRunner(Path workingDirectory, Clock clock, PrintStream out, PrintStream err)`
+  and
+  `CommandRunner(Path workingDirectory, Clock clock, PrintStream out, PrintStream err, FileReplacer replacer)`,
+  and public `int run(String[] args)` returning 0, 1 or 2 per the CLI contract.
+  It never calls `System.exit` and writes only to the supplied streams.
+- `com.smarttodo.storage.FileReplacer` is a public `@FunctionalInterface` with
+  `void replace(Path temp, Path target) throws IOException`. The default does an
+  atomic move. `JsonTaskRepository` uses it for the final replacement; if it
+  throws, the old file stays byte-for-byte unchanged and the temporary file is
+  deleted.
+- `TodoMain.main` builds `CommandRunner` with the current directory,
+  `Clock.systemUTC()`, `System.out` and `System.err`, then calls `System.exit`
+  with the result. This replaces the test-only launcher.
+- The data file is `workingDirectory.resolve("tasks.json")`.
+
+**Change history**: 2026-11-03 — Added explicit CLI and storage seams to make
+contract and failed-replacement behavior testable without a test-only launcher.
 
 ## Error Handling
 
