@@ -40,7 +40,7 @@
 ### Tests for User Story 1
 
 - [ ] T010 [P] [US1] Add unit tests for `FR-1` and `FR-2` in `src/test/java/com/smarttodo/application/TaskServiceTest.java` covering add defaults, title validation, optional fields, and ID allocation
-- [ ] T011 [P] [US1] Add storage tests in `src/test/java/com/smarttodo/storage/JsonTaskRepositoryTest.java` covering missing file, versioned JSON round trip, absent description, and monotonic IDs
+- [ ] T011 [P] [US1] Add storage tests in `src/test/java/com/smarttodo/storage/JsonTaskRepositoryTest.java` covering missing file, versioned JSON round trip, absent description, monotonic IDs, and injected write or move failures that preserve the existing file bytes
 - [ ] T012 [P] [US1] Add CLI subprocess tests in `src/test/java/com/smarttodo/cli/TodoCliProcessTest.java` for successful add output and persistence across runs
 
 ### Implementation for User Story 1
@@ -48,7 +48,7 @@
 - [ ] T013 [P] [US1] Implement add-command validation and output in `cli/ArgumentParser.java` and `CommandRunner.java`
 - [ ] T014 [P] [US1] Implement task creation in `TaskService` and repository save flow for `title`, `description`, `priority`, `tags`, `status`, and `createdAt`
 - [ ] T015 [US1] Ensure add operations set the default priority to `MEDIUM`, empty tag list, absent description, status `TODO`, and UTC `createdAt` values
-- [ ] T016 [US1] Validate the CLI add contract for empty title, bad tag syntax, invalid priority, and read/save failure behavior
+- [ ] T016 [US1] Validate the CLI add contract for empty and whitespace-only titles, blank tags, acceptance and normalization of tags containing internal spaces or punctuation, invalid priority, and read/save failure behavior
 
 **Checkpoint**: Adding tasks is fully functional and independently testable.
 
@@ -128,6 +128,9 @@
 - [ ] T036 [P] Run `mvn -o verify` and confirm the full project passes Checkstyle (`google_checks`, zero warnings), SpotBugs/Find Security Bugs (no Medium-or-higher findings), and the test suite
 - [ ] T037 [P] Validate the subprocess-level CLI contract for exact stdout/stderr separation, exit codes, stable messages, and absence of stack traces
 - [ ] T038 [P] Update the feature documentation and quickstart examples to match the final behavior and confirm all docs remain consistent with the implementation
+- [ ] T039 [P] Add an `FR-12` scope test that verifies the CLI exposes no login, account, multi-user, GUI, or recurring-task features and the application has no network-client dependency; include `FR-12` in the test name
+- [ ] T040 [P] Add an `NFR-1` network-attempt test that runs relevant application and test behavior with network access blocked and asserts zero attempted connections; include `NFR-1` in the test name
+- [ ] T041 [P] Add an `NFR-4` storage test that simulates interruption before replacing an existing store and asserts the prior file remains valid and unchanged with no partial task file visible; include `NFR-4` in the test name
 
 **Checkpoint**: The CLI is production-ready for the v1-local scope, with quality gates passing offline.
 

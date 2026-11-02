@@ -22,8 +22,10 @@ todo delete <id>
   omitting `--tag` and `--clear-tags` leaves them unchanged. `--clear-tags`
   conflicts with `--tag`; `--clear-description` conflicts with
   `--description`.
-- Tags are trimmed, lowercased, deduplicated, and must match
-  `[a-z0-9][a-z0-9_-]*`. IDs are positive integers.
+- Tags are trimmed, lowercased, and deduplicated while retaining their
+  first-supplied order. A tag must contain at least one non-whitespace
+  character after trimming; spaces and punctuation are allowed internally.
+  IDs are positive integers.
 
 ## Success Output
 

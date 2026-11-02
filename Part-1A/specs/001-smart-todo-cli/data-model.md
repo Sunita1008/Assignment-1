@@ -10,7 +10,7 @@ One work item belonging to the sole local user.
 | `title` | string | yes | Must not be empty or whitespace-only. |
 | `description` | string | no | Absent in persisted records when unset; list output represents it as JSON `null`. |
 | `priority` | enum | yes | `LOW`, `MEDIUM`, or `HIGH`; defaults to `MEDIUM`. |
-| `tags` | ordered string list | yes | Defaults to `[]`; trimmed, lowercased, deduplicated; each normalized tag matches `[a-z0-9][a-z0-9_-]*`. |
+| `tags` | ordered string list | yes | Defaults to `[]`; trimmed, lowercased, deduplicated; each tag must contain at least one non-whitespace character after trimming. Internal spaces and punctuation are allowed. |
 | `status` | enum | yes | `TODO`, `IN_PROGRESS`, or `DONE`; defaults to `TODO`. |
 | `createdAt` | UTC RFC 3339 timestamp | yes | Assigned on creation; immutable; serialized with `Z`. |
 
