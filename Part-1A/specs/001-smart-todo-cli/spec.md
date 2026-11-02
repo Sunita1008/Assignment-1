@@ -34,7 +34,7 @@ As the sole user, I can list my tasks, optionally filter by tag, and optionally 
 **Acceptance Scenarios**:
 
 1. **Given** tasks exist, **When** I list them, **Then** each task is printed with all its fields in a stable format.
-2. **Given** tasks have tags, **When** I filter by one or more tags, **Then** only tasks matching at least one requested tag are printed.
+2. **Given** tasks have tags, **When** I filter by one or more tags, **Then** only tasks matching at least one requested tag (OR matching) are printed.
 3. **Given** tasks have different priorities, **When** I sort by priority, **Then** HIGH precedes MEDIUM and LOW, with IDs ascending within a priority.
 4. **Given** no tasks match a filter, **When** I list them, **Then** the CLI reports that no tasks were found and exits successfully.
 
@@ -72,6 +72,7 @@ As the sole user, I can delete a task I no longer need so it no longer appears i
 - A missing data file is treated as an empty list; it is created when the first successful add is saved.
 - Invalid JSON or an unsupported data-file version is reported as a storage error; the file is not silently replaced or overwritten.
 - A write failure reports a storage error and does not print a success message.
+- When filtering by multiple tags, a task matches if it has any requested tag (OR matching), not only if it has every requested tag.
 - Repeated tags on one task are stored once. Tags are case-insensitive and stored in lowercase.
 - IDs are positive integers, allocated monotonically, and are not reused after deletion.
 - Repeating a status transition to the task's current status is allowed and leaves the task unchanged.
@@ -83,7 +84,7 @@ As the sole user, I can delete a task I no longer need so it no longer appears i
 - **FR-1**: The CLI MUST add a task with a required non-empty title and optional description, priority, and repeated tags. It MUST assign an ID, set status to TODO, and record the creation time.
 - **FR-2**: The CLI MUST default an omitted priority to MEDIUM, tags to an empty list, and description to absent.
 - **FR-3**: The CLI MUST list all tasks in a stable, machine-readable, one-task-per-line format containing ID, title, description, priority, tags, status, and creation time.
-- **FR-4**: The CLI MUST filter tasks by one or more tags. A task matches when it contains at least one requested tag; tag comparison MUST be case-insensitive.
+- **FR-4**: The CLI MUST filter tasks by one or more tags using OR matching: a task matches when it contains at least one requested tag. Tag comparison MUST be case-insensitive.
 - **FR-5**: The CLI MUST sort tasks by priority when requested, in HIGH, MEDIUM, LOW order, and sort equal-priority tasks by ascending ID. Without a sort option, tasks MUST be listed in ascending ID order.
 - **FR-6**: The CLI MUST update a task's title, description, priority, or complete tag set by ID. Updating a task MUST preserve its ID and creation time. The description MUST be clearable explicitly.
 - **FR-7**: The CLI MUST set a task's status by ID to TODO, IN_PROGRESS, or DONE.
@@ -98,7 +99,7 @@ As the sole user, I can delete a task I no longer need so it no longer appears i
 - **NFR-1**: The application and its tests MUST make no network requests or open network connections; after dependencies are provisioned, the Maven build and tests MUST be runnable offline.
 - **NFR-2**: Production and test code MUST target Java 17 or higher and use Maven.
 - **NFR-3**: CLI output MUST be deterministic: no color or progress output; valid command results go to stdout, errors to stderr, and errors MUST NOT include stack traces.
-- **NFR-4**: JSON data MUST be UTF-8, versioned, and saved so a failed write does not leave a partially written task file.
+- **NFR-4**: JSON data MUST be UTF-8 and versioned. If a save is interrupted or fails before replacement, the prior data file MUST remain unchanged; no partial task file may be exposed.
 - **NFR-5**: Every acceptance criterion MUST have a test whose name includes its stable requirement ID. The complete JUnit 5 test suite, Checkstyle with `google_checks` and zero warnings, and SpotBugs with Find Security Bugs with no findings of Medium severity or higher MUST pass.
 
 ### CLI Contract
@@ -141,7 +142,7 @@ Each numbered criterion is a binary pass/fail check. Unless a criterion says oth
 
 #### FR-4: Filter by tag
 
-- **AC-FR-4**: Given task 1 `{id:1,title:"Buy milk",description:null,priority:"MEDIUM",tags:["groceries"],status:"TODO",createdAt:"2026-11-01T10:00:00Z"}` and task 2 tagged `work`, run `todo list --tag GROCERIES`. Pass only if stdout is exactly `{"id":1,"title":"Buy milk","description":null,"priority":"MEDIUM","tags":["groceries"],"status":"TODO","createdAt":"2026-11-01T10:00:00Z"}\n`, stderr is empty, and exit code is 0. With no match, stdout is exactly `No tasks found.\n`, stderr is empty, and exit code is 0. Test name includes `FR-4`.
+- **AC-FR-4**: Given task 1 `{id:1,title:"Buy milk",description:null,priority:"MEDIUM",tags:["groceries"],status:"TODO",createdAt:"2026-11-01T10:00:00Z"}`, task 2 `{id:2,title:"Submit report",description:null,priority:"HIGH",tags:["work"],status:"TODO",createdAt:"2026-11-01T10:01:00Z"}`, and task 3 `{id:3,title:"Call Sam",description:null,priority:"MEDIUM",tags:["home"],status:"TODO",createdAt:"2026-11-01T10:02:00Z"}`, run `todo list --tag GROCERIES --tag work`. Pass only if stdout is exactly the JSON lines for tasks 1 and 2 in ascending ID order, stderr is empty, and exit code is 0; task 3 MUST be excluded, demonstrating OR matching, and tag comparison MUST be case-insensitive. With no match, stdout is exactly `No tasks found.\n`, stderr is empty, and exit code is 0. Test name includes `FR-4`.
 
 #### FR-5: Sort by priority
 
@@ -198,7 +199,7 @@ Each numbered criterion is a binary pass/fail check. Unless a criterion says oth
 
 #### NFR-4: Safe JSON persistence
 
-- **AC-NFR-4**: Interrupt a simulated save before replacement of the prior data file. Pass only if the prior file remains valid and unchanged, and no partial task file is visible. Test name includes `NFR-4`.
+- **AC-NFR-4**: Seed `tasks.json` and record its bytes, then run a data-changing command with a simulated save interruption before replacement. Pass only if the command reports `Error: unable to save tasks file.\n` on stderr, exits 1 without success output, the prior file remains valid and byte-for-byte unchanged, and no partial or temporary task file is visible. Test name includes `NFR-4`.
 
 #### NFR-5: Quality gates and traceability
 
@@ -215,7 +216,7 @@ Each numbered criterion is a binary pass/fail check. Unless a criterion says oth
 - The default and only v1 data location is `tasks.json` in the current working directory.
 - New tasks start in TODO with MEDIUM priority, no tags, and no description unless supplied.
 - IDs start at 1, increase monotonically, and are never reused; the creation time is assigned at successful creation and stored in UTC.
-- Tags are trimmed, lowercased, and deduplicated. A tag is valid when it contains any non-whitespace content after trimming; spaces and punctuation are allowed internally. A task matches a multi-tag filter if it has any requested tag.
+- Tags are trimmed, lowercased, and deduplicated. A tag is valid when it contains any non-whitespace content after trimming; spaces and punctuation are allowed internally. A task matches a multi-tag filter if it has any (OR) requested tag.
 - Tags retain the order in which they were first supplied; updating tags replaces that ordered set.
 - Listing without a sort option orders tasks by ascending ID; priority sort orders HIGH, MEDIUM, LOW and breaks ties by ascending ID.
 - The compact JSON line format and diagnostics in the CLI Contract are the externally observable output contract.
@@ -235,4 +236,5 @@ The following are outside the v1 scope and do not change its CLI contract:
 - Q: Where is the data file stored? → A: `tasks.json` in the current working directory.
 - Q: How is title whitespace handled? → A: Titles are trimmed; empty or whitespace-only titles are invalid (exit code 2).
 - Q: How are tags validated? → A: A tag must contain at least one non-whitespace character after trimming. Spaces and punctuation are allowed internally; tags are lowercased and trimmed before storage.
+- Q: How do multi-tag filtering and interrupted saves behave? → A: Multi-tag filters use OR matching; an interrupted save leaves the prior data file unchanged.
 - Q: What happens on an update with no fields? → A: It is rejected as invalid arguments (exit code 2).
