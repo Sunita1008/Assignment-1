@@ -113,7 +113,7 @@ todo status <id> <TODO|IN_PROGRESS|DONE>
 todo delete <id>
 ```
 
-For `update`, repeated `--tag` values replace the complete tag set; omitting both `--tag` and `--clear-tags` leaves tags unchanged. `--clear-tags` removes all tags and cannot be combined with `--tag`. `--clear-description` removes the description and cannot be combined with `--description`. An update MUST specify at least one field to change. Tags MUST match `[a-z0-9][a-z0-9_-]*` after lowercasing and trimming. Empty or whitespace-only titles are invalid. The data file is `tasks.json` in the current working directory. It MUST be a UTF-8 JSON object with `version` set to `1`, `nextId` set to the next never-used positive integer, and `tasks` set to an array of task records. Each record contains `id`, `title`, `priority`, `tags`, `status`, and `createdAt`; `description` is present only when set. The stored task array MUST be ordered by ascending ID. The list command emits `description:null` when the stored description is absent.
+For `update`, repeated `--tag` values replace the complete tag set; omitting both `--tag` and `--clear-tags` leaves tags unchanged. `--clear-tags` removes all tags and cannot be combined with `--tag`. `--clear-description` removes the description and cannot be combined with `--description`. An update MUST specify at least one field to change. Conflicting options and updates with no fields to change are invalid arguments. Titles MUST be trimmed of leading and trailing whitespace before validation and storage; internal whitespace is preserved. Empty or whitespace-only titles after trimming are invalid. Tags MUST contain at least one non-whitespace character after trimming; spaces and punctuation are allowed internally. Tags are lowercased and trimmed before storage. The data file is `tasks.json` in the current working directory. It MUST be a UTF-8 JSON object with `version` set to `1`, `nextId` set to the next never-used positive integer, and `tasks` set to an array of task records. Each record contains `id`, `title`, `priority`, `tags`, `status`, and `createdAt`; `description` is present only when set. The stored task array MUST be ordered by ascending ID. The list command emits `description:null` when the stored description is absent.
 
 Successful add prints `Added task #<id>: <title>` followed by one newline. Successful update, status, and delete print `Updated task #<id>.`, `Task #<id> status set to <STATUS>.`, and `Deleted task #<id>.`, respectively, each followed by one newline. These commands exit 0.
 
@@ -129,6 +129,7 @@ Each numbered criterion is a binary pass/fail check. Unless a criterion says oth
 
 - **AC-FR-1a**: With an empty store and the test clock set to `2026-11-01T10:00:00Z`, run `todo add --title "Buy milk" --priority MEDIUM --tag groceries`. Pass only if stdout is exactly `Added task #1: Buy milk\n`, stderr is empty, exit code is 0, and the persisted task has ID 1, title `Buy milk`, priority MEDIUM, tags `["groceries"]`, status TODO, and createdAt `2026-11-01T10:00:00Z`. Test name includes `FR-1`.
 - **AC-FR-1b**: Run `todo add --title "Buy milk"` with an empty store. Pass only if stdout is exactly `Added task #1: Buy milk\n`, stderr is empty, and exit code is 0. Test name includes `FR-1`.
+- **AC-FR-1c**: With an empty store, run `todo add --title "  Buy  milk  "`. Pass only if stdout is exactly `Added task #1: Buy  milk\n`, stderr is empty, exit code is 0, and the persisted title is exactly `Buy  milk`. Test name includes `FR-1`.
 
 #### FR-2: Defaults and optional description
 
@@ -151,6 +152,7 @@ Each numbered criterion is a binary pass/fail check. Unless a criterion says oth
 - **AC-FR-6a**: Given task 1 `{id:1,title:"Buy milk",description:null,priority:"MEDIUM",tags:["groceries"],status:"TODO",createdAt:"2026-11-01T10:00:00Z"}`, run `todo update 1 --title "Buy oat milk" --priority HIGH --tag groceries --tag home`. Pass only if command stdout is exactly `Updated task #1.\n`, stderr is empty, exit code is 0, and subsequent `todo list` stdout is exactly `{"id":1,"title":"Buy oat milk","description":null,"priority":"HIGH","tags":["groceries","home"],"status":"TODO","createdAt":"2026-11-01T10:00:00Z"}\n` with exit code 0. Test name includes `FR-6`.
 - **AC-FR-6b**: Given task 1 `{id:1,title:"Buy milk",description:"whole milk",priority:"MEDIUM",tags:[],status:"TODO",createdAt:"2026-11-01T10:00:00Z"}`, run `todo update 1 --clear-description`. Pass only if command stdout is exactly `Updated task #1.\n`, stderr is empty, exit code is 0, and subsequent `todo list` stdout is exactly `{"id":1,"title":"Buy milk","description":null,"priority":"MEDIUM","tags":[],"status":"TODO","createdAt":"2026-11-01T10:00:00Z"}\n` with exit code 0. Test name includes `FR-6`.
 - **AC-FR-6c**: Given task 1 `{id:1,title:"Buy milk",description:null,priority:"MEDIUM",tags:["groceries"],status:"TODO",createdAt:"2026-11-01T10:00:00Z"}`, run `todo update 1 --clear-tags`. Pass only if command stdout is exactly `Updated task #1.\n`, stderr is empty, exit code is 0, and subsequent `todo list` stdout is exactly `{"id":1,"title":"Buy milk","description":null,"priority":"MEDIUM","tags":[],"status":"TODO","createdAt":"2026-11-01T10:00:00Z"}\n` with exit code 0. Test name includes `FR-6`.
+- **AC-FR-6d**: Given task 1 `{id:1,title:"Buy milk",description:null,priority:"MEDIUM",tags:[],status:"TODO",createdAt:"2026-11-01T10:00:00Z"}`, run `todo update 1 --title "  Call  Sam  "`. Pass only if command stdout is exactly `Updated task #1.\n`, stderr is empty, exit code is 0, and subsequent `todo list` stdout is exactly `{"id":1,"title":"Call  Sam","description":null,"priority":"MEDIUM","tags":[],"status":"TODO","createdAt":"2026-11-01T10:00:00Z"}\n`. Test name includes `FR-6`.
 
 #### FR-7: Change status
 
@@ -164,6 +166,9 @@ Each numbered criterion is a binary pass/fail check. Unless a criterion says oth
 
 - **AC-FR-9a**: Run `todo add --title ""`. Pass only if stdout is empty, stderr is exactly `Error: invalid arguments.\n`, exit code is 2, and no stack trace is present. Test name includes `FR-9`.
 - **AC-FR-9b**: Run `todo add --title "Buy milk" --priority URGENT`. Pass only if stdout is empty, stderr is exactly `Error: priority must be LOW, MEDIUM, or HIGH.\n`, exit code is 2, and no stack trace is present. Test name includes `FR-9`.
+- **AC-FR-9c**: Run `todo add --title "Buy milk" --tag "   "`. Pass only if stdout is empty, stderr is exactly `Error: invalid arguments.\n`, exit code is 2, and no stack trace is present. A tag containing any non-whitespace content, including spaces or punctuation internally, is valid. Test name includes `FR-9`.
+- **AC-FR-9d**: Given task 1 exists, run `todo update 1 --description "new text" --clear-description`, then run `todo update 1` with no fields. Pass only if each command prints nothing to stdout, prints exactly `Error: invalid arguments.\n` to stderr, exits 2, and leaves stored tasks unchanged. Test name includes `FR-9`.
+- **AC-FR-9e**: Run `todo add --title "   "`. Pass only if stdout is empty, stderr is exactly `Error: invalid arguments.\n`, exit code is 2, and no stack trace is present. Test name includes `FR-9`.
 
 #### FR-10: Local JSON persistence
 
@@ -210,13 +215,24 @@ Each numbered criterion is a binary pass/fail check. Unless a criterion says oth
 - The default and only v1 data location is `tasks.json` in the current working directory.
 - New tasks start in TODO with MEDIUM priority, no tags, and no description unless supplied.
 - IDs start at 1, increase monotonically, and are never reused; the creation time is assigned at successful creation and stored in UTC.
-- Tags are trimmed, lowercased, and deduplicated. A task matches a multi-tag filter if it has any requested tag.
+- Tags are trimmed, lowercased, and deduplicated. A tag is valid when it contains any non-whitespace content after trimming; spaces and punctuation are allowed internally. A task matches a multi-tag filter if it has any requested tag.
 - Tags retain the order in which they were first supplied; updating tags replaces that ordered set.
 - Listing without a sort option orders tasks by ascending ID; priority sort orders HIGH, MEDIUM, LOW and breaks ties by ascending ID.
 - The compact JSON line format and diagnostics in the CLI Contract are the externally observable output contract.
 - Java 17+, Maven, local-only operation, and the project quality gates are required by the existing project constitution.
 
-## Unresolved Questions
+## Deferred Considerations
 
-- Should a later version support selecting a data-file path other than `tasks.json` in the current working directory?
-- Should task descriptions be searchable or should list output have a human-oriented table mode in addition to the specified JSON-lines format?
+The following are outside the v1 scope and do not change its CLI contract:
+
+- Configurable data-file paths beyond `tasks.json` in the current working directory.
+- Description search or a human-oriented table output mode in addition to JSON Lines.
+
+## Clarifications
+
+### Session 2026-11-03
+
+- Q: Where is the data file stored? → A: `tasks.json` in the current working directory.
+- Q: How is title whitespace handled? → A: Titles are trimmed; empty or whitespace-only titles are invalid (exit code 2).
+- Q: How are tags validated? → A: A tag must contain at least one non-whitespace character after trimming. Spaces and punctuation are allowed internally; tags are lowercased and trimmed before storage.
+- Q: What happens on an update with no fields? → A: It is rejected as invalid arguments (exit code 2).
