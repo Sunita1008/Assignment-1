@@ -24,3 +24,10 @@ Facts for Section 5 (clarified rules)
 - Harness run: 2026-11-03 02:53:11 (+05:30), label "clarified"
 - Lint PASS, Security PASS, Tests PASS; total tests increased from 45 to 52.
 - No failure occurred, so there is still no repair cycle in Part 1A.
+
+Facts for Section 6 (acceptance decision)
+- REJECT full acceptance for now. Lint, security, and tests passed, with no failures, but the evidence does not fully verify every stated requirement.
+- NFR-1 was checked by scanning sources, not by running the suite with network access disabled.
+- NFR-2 was built on Java 21 with a Java 17 target; the suite was not run on Java 17 itself.
+- FR-12 also relies on a source scan, so the scan alone cannot establish every excluded feature is absent.
+- These are verification limitations, not observed gate failures; complete offline and Java 17 runs plus stronger FR-12 evidence are needed to support acceptance.
