@@ -1,0 +1,17 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< edu.bits.sdlc:todo-cli >-----------------------
+[INFO] Building todo-cli 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (default-cli) @ todo-cli ---
+[INFO] Starting audit...
+Audit done.
+[INFO] You have 0 Checkstyle violations.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.275 s
+[INFO] Finished at: 2026-11-03T02:53:17+05:30
+[INFO] ------------------------------------------------------------------------

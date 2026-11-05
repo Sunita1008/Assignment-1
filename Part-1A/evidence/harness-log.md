@@ -17,3 +17,10 @@ Facts for Section 3 (my harness run)
 
 Facts for Section 4
 - No gate failed, so there was no repair cycle in Part 1A
+
+Facts for Section 5 (clarified rules)
+- The clarified rules were already in the spec before implementation; I added their tests after the first generation.
+- The first tests missed AC-FR-1c, AC-FR-6d, AC-FR-9c, AC-FR-9d, AC-FR-9e, and the OR-matching example in FR-4.
+- Harness run: 2026-11-03 02:53:11 (+05:30), label "clarified"
+- Lint PASS, Security PASS, Tests PASS; total tests increased from 45 to 52.
+- No failure occurred, so there is still no repair cycle in Part 1A.
