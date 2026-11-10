@@ -6,101 +6,153 @@
 
 **Status**: Draft
 
-**Input**: User description: "Natural-language reminder agent for users to create, review, and manage time-based reminders"
+**Input**: User description: "Build a Natural-Language Reminder Agent. It takes one unstructured user message plus a reference 'now' time and time zone, and returns one structured JSON result. Supported intents: CREATE, RESCHEDULE, SNOOZE, CLARIFY, REFUSE. Define an output schema, invariants, behavioral properties, guardrails, evaluation threshold and score, and traceable requirement IDs. Exclude notification delivery, user accounts, and a GUI."
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Create a reminder from plain language (Priority: P1)
+### User Story 1 - Parse a reminder request (Priority: P1)
 
-A user wants to set a reminder without filling out a form. They can type a normal sentence such as "Remind me to call my dentist at 9:30 AM tomorrow" or "Wake me up in 2 hours" and expect the agent to understand what needs to be reminded and when.
+A person gives the agent one plain-language message and a reference instant and time zone. The agent identifies a clear request to create a reminder and returns the reminder text and future scheduled instant as structured data.
 
-**Why this priority**: This is the core value of the feature and the primary workflow that makes the agent useful from the first interaction.
+**Why this priority**: Creating a reminder is the primary purpose of the agent.
 
-**Independent Test**: Can be fully tested by entering a natural-language reminder and confirming the reminder is created with the correct action, time, and status.
-
-**Acceptance Scenarios**:
-
-1. **Given** the user is creating a reminder, **When** they enter "Remind me to submit the report at 5:00 PM next Tuesday", **Then** the system creates a reminder for the specified action and time.
-2. **Given** the user is creating a reminder, **When** they enter "Remind me in 2 hours", **Then** the system interprets the relative time and stores the reminder for the correct future time.
-
----
-
-### User Story 2 - Review and manage existing reminders (Priority: P2)
-
-A user can view upcoming reminders, check whether a reminder is due, and update or remove reminders when plans change.
-
-**Why this priority**: Users frequently need to adjust reminders after initial creation, and management is necessary for a reliable reminder experience.
-
-**Independent Test**: Can be tested by creating multiple reminders, listing them, editing one, and confirming the update appears in the persisted reminder list.
+**Independent Test**: Provide a clear creation request with a fixed reference instant and zone; verify the intent, reminder text, and scheduled instant without requiring a notification or saved record.
 
 **Acceptance Scenarios**:
 
-1. **Given** a user has multiple reminders, **When** they request the list, **Then** the system shows each reminder with its title, scheduled time, and current status.
-2. **Given** a user wants to change a reminder, **When** they update the time or description, **Then** the system stores the updated reminder and the old version is no longer treated as active.
+1. **Given** a valid reference instant and time zone, **When** the message says "Remind me to call the dentist tomorrow at 9:30 AM", **Then** the result is a schema-valid `CREATE` with the correct reminder text and instant in the supplied zone.
+2. **Given** a valid reference instant and time zone, **When** the message says "Remind me to stretch in 2 hours", **Then** the result is a `CREATE` scheduled exactly two hours after the reference instant.
 
----
+### User Story 2 - Change an existing reminder's time (Priority: P2)
 
-### User Story 3 - Handle invalid or ambiguous inputs safely (Priority: P3)
+A person asks to reschedule or snooze a reminder. The agent extracts the requested time change and the user's reference to the target reminder, but does not look up or modify a reminder record.
 
-A user may provide unclear, missing, or invalid reminder information. The system must reject unsafe or incomplete requests clearly rather than guessing incorrectly.
+**Why this priority**: Time changes are the other supported reminder operations and must work without implying the agent has access to a reminder store.
 
-**Why this priority**: Clear error handling avoids incorrect reminders, missed alerts, and user confusion when the input is incomplete or ambiguous.
-
-**Independent Test**: Can be tested by submitting incomplete or malformed reminder commands and confirming the system replies with a structured validation error without creating a reminder.
+**Independent Test**: Provide a message identifying one target and a future time; verify `RESCHEDULE` or `SNOOZE`, the target reference, and the proposed instant. Verify that an unresolved or non-unique target produces `CLARIFY`.
 
 **Acceptance Scenarios**:
 
-1. **Given** the user enters an incomplete reminder like "Remind me tomorrow", **When** the system cannot determine the exact action or time, **Then** it asks for clarification or rejects the request with a clear error.
-2. **Given** the user enters an invalid date such as "February 30th", **When** the system tries to create the reminder, **Then** it rejects the value and does not store the reminder.
+1. **Given** a message naming one reminder and a clear replacement time, **When** the person asks to reschedule it, **Then** the result is `RESCHEDULE` with the target reference and proposed time.
+2. **Given** a message naming one reminder and a clear relative delay, **When** the person asks to snooze it, **Then** the result is `SNOOZE` with the target reference and proposed time.
+3. **Given** no unique target can be determined from the message, **When** the person asks to reschedule or snooze, **Then** the result is `CLARIFY` rather than an invented target or identifier.
 
----
+### User Story 3 - Resolve ambiguity and refuse unsafe actions (Priority: P3)
+
+A person may give incomplete, conflicting, invalid, or out-of-scope instructions. The agent asks a focused question when a reminder can safely be completed after clarification, and refuses requests to perform unrelated or unsafe operations.
+
+**Why this priority**: A structured but incorrect time or an unintended data action is worse than a clarification or refusal.
+
+**Independent Test**: Supply ambiguous, incomplete, past-time, injection, and data-transfer requests; verify the correct intent and reason code and that no reminder is proposed for a refusal.
+
+**Acceptance Scenarios**:
+
+1. **Given** a message with no reminder text or no determinable time, **When** the agent processes it, **Then** it returns `CLARIFY` with a non-empty question and no scheduled instant.
+2. **Given** a message that attempts to override the agent's instructions, **When** it also contains a safe, independently understandable reminder request, **Then** the agent ignores the attempted override and only parses the safe reminder request.
+3. **Given** a request to delete or transmit data, **When** the agent processes it, **Then** it returns `REFUSE` with the applicable reason code and no reminder fields populated.
 
 ### Edge Cases
 
-- What happens when the user specifies a past date or time?
-- How does the system handle duplicate reminders with the same text and schedule?
-- What happens when the user enters an ambiguous phrase such as "next Friday" without a time?
-- How does the system handle timezone or DST changes for reminders scheduled across local date boundaries?
-- What happens when an alert cannot be delivered due to a system or network failure?
+- An explicit date or time is in the past, or a date such as February 30 does not exist.
+- A phrase such as "next Friday" has no time, admits multiple interpretations, or conflicts with another time in the same message.
+- A local time is ambiguous or nonexistent due to a daylight-saving transition.
+- The reference instant is malformed, the time zone is not a valid IANA time-zone identifier, or the two inputs cannot be interpreted consistently.
+- A reschedule or snooze request has no target, has multiple possible targets, or includes no future replacement time.
+- A request includes recurrence, listing, cancellation, delivery, or another operation not supported by this one-message parser.
+- A reminder's subject text quotes instruction-like or adversarial content; that content is data, not authority to change agent behavior.
+- A request to remind the user to delete or send something is not itself a request for the agent to execute that deletion or transmission.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-- **FR-001**: The system MUST allow users to create a reminder using natural-language sentences and other equivalent short command inputs.
-- **FR-002**: The system MUST extract the reminder action, target date/time, and optional recurrence pattern from the user input when the information is sufficiently clear.
-- **FR-003**: The system MUST support a stored reminder model with a unique identifier, user-visible message, scheduled time, and status field.
-- **FR-004**: The system MUST validate reminder entries and reject unsafe or incomplete requests without creating a reminder record.
-- **FR-005**: The system MUST allow users to list active and past reminders in a readable format.
-- **FR-006**: The system MUST allow users to update the description or scheduled time of an existing reminder.
-- **FR-007**: The system MUST allow users to delete reminders they no longer want.
-- **FR-008**: The system MUST notify the user when a reminder becomes due and must clearly distinguish upcoming, due, and completed reminders.
-- **FR-009**: The system MUST support at least simple relative times such as "in 2 hours", "tomorrow", and "next Monday" for standard reminder creation.
-- **FR-010**: The system MUST handle ambiguous or missing date/time details by asking for clarification or reporting a validation error instead of silently creating a wrong reminder.
-- **FR-011**: The system MUST persist reminder data long enough for the user to retrieve and manage it across multiple interactions.
-- **FR-012**: The system MUST prevent duplicate reminder creation when the same reminder text and schedule are already present unless the user explicitly requests a new reminder.
+- **FR-1**: The agent MUST accept exactly one unstructured user message, one reference "now" instant, and one IANA time-zone identifier as input. The reference instant MUST include an explicit UTC offset or `Z`.
+- **FR-2**: The agent MUST classify an unambiguous request as exactly one of `CREATE`, `RESCHEDULE`, `SNOOZE`, `CLARIFY`, or `REFUSE`.
+- **FR-3**: For a clear creation request, the agent MUST extract the reminder text and a future scheduled instant. For a clear reschedule or snooze request, it MUST extract the target reference and proposed future instant.
+- **FR-4**: The agent MUST interpret relative and local-calendar times against the supplied reference instant and time zone. It MUST return the instant in UTC and echo the supplied IANA time zone for valid scheduling results.
+- **FR-5**: The agent MUST return exactly one JSON object conforming to the Output Schema Contract below, with no prose or markup outside the JSON object.
+- **FR-6**: When required information is absent, invalid, conflicting, or ambiguous, the agent MUST return `CLARIFY` with a focused, non-empty question instead of guessing. Invalid input time context MUST also be surfaced as `CLARIFY`.
+- **FR-7**: The agent MUST return `REFUSE` for unsafe or out-of-scope actions, with a stable reason code and no reminder content or scheduled time.
+- **FR-8**: `RESCHEDULE` and `SNOOZE` MUST describe a proposed change only. The agent MUST NOT claim to have found, changed, stored, or scheduled a reminder.
+- **FR-9**: The agent MUST NOT create identifiers, assume access to reminder history, or infer a target not identified by the message.
+- **FR-10**: The agent MUST NOT implement notification delivery, user accounts, a graphical interface, persistence, reminder listing, deletion of stored reminders, or external integrations.
 
-### Key Entities *(include if feature involves data)*
+### Output Schema Contract
 
-- **Reminder**: The core reminder record, containing the reminder text, scheduled timestamp, recurrence information if any, status, and associated identifier.
-- **ReminderStatus**: The lifecycle state of a reminder, such as active, due, completed, or cancelled.
-- **UserInput**: The raw natural-language request supplied by the user, used for parsing and validation before persistence.
-- **ReminderList**: A user-visible collection of reminders that supports sorting by upcoming time and filtering by active or completed reminders.
+The output is a single JSON object. Every field below is required on every result; nullable means the JSON value is either the declared type or `null`. No additional properties are allowed.
+
+| Field | Type | Allowed values and constraints |
+|---|---|---|
+| `schema_version` | string | Exactly `"1.0"`. |
+| `intent` | string | Exactly one of `"CREATE"`, `"RESCHEDULE"`, `"SNOOZE"`, `"CLARIFY"`, `"REFUSE"`. |
+| `reminder_text` | string or null | Non-empty extracted reminder text, or `null`. No identifier or existing reminder details may be invented. |
+| `scheduled_at` | string or null | RFC 3339 UTC timestamp ending in `Z` (for example, `"2026-11-11T04:00:00Z"`), or `null`. For actionable intents, it MUST be strictly later than the reference instant. |
+| `time_zone` | string or null | Valid IANA time-zone name supplied as input (for example, `"Asia/Kolkata"`), or `null`. Required for actionable intents. |
+| `target_reference` | string or null | Non-empty user-derived description of the target for `RESCHEDULE` and `SNOOZE`; otherwise `null`. It is not a reminder ID. |
+| `clarification_question` | string or null | Non-empty focused question for `CLARIFY`; otherwise `null`. Exact wording is not prescribed. |
+| `reason_code` | string | Exactly one of `"NONE"`, `"MISSING_REMINDER_TEXT"`, `"MISSING_TARGET"`, `"AMBIGUOUS_TIME"`, `"INVALID_OR_PAST_TIME"`, `"INVALID_CONTEXT"`, `"UNSAFE_ACTION"`, `"OUT_OF_SCOPE"`, `"INJECTION_ATTEMPT"`. |
+
+Reason codes identify the outcome, not the wording. Use `NONE` for actionable results. Use the most specific applicable code for `CLARIFY` or `REFUSE`; use `INJECTION_ATTEMPT` when the message is solely an attempt to override instructions or obtain protected instructions or data. An ignored injection embedded in an otherwise safe reminder does not change that reminder's outcome.
+
+### Structural Invariants
+
+- **INV-1**: Every output is parseable JSON containing one top-level object with exactly the eight required fields in the contract; values have the declared types and enum values.
+- **INV-2**: For `CREATE`, `reminder_text`, `scheduled_at`, and `time_zone` are non-null; `target_reference` and `clarification_question` are null; `reason_code` is `NONE`.
+- **INV-3**: For `RESCHEDULE` and `SNOOZE`, `target_reference`, `scheduled_at`, and `time_zone` are non-null; `clarification_question` is null; `reason_code` is `NONE`. `reminder_text` may be null if the message does not provide it.
+- **INV-4**: For `CLARIFY`, `reminder_text`, `scheduled_at`, `time_zone`, and `target_reference` are null; `clarification_question` is non-empty; `reason_code` is not `NONE`.
+- **INV-5**: For `REFUSE`, all four reminder/target fields and `clarification_question` are null; `reason_code` is one of `UNSAFE_ACTION`, `OUT_OF_SCOPE`, or `INJECTION_ATTEMPT`.
+- **INV-6**: Every non-null `scheduled_at` denotes a valid instant strictly later than the supplied reference instant. The local date/time interpretation MUST respect the supplied time zone, including daylight-saving transitions.
+
+### Behavioral Properties
+
+- **PROP-1**: Semantically equivalent requests produce equivalent intent and reminder slots even when phrased differently; equivalence is judged by meaning, not exact text.
+- **PROP-2**: Relative and local-calendar time expressions resolve to the intended instant calculated from the supplied reference instant and time zone.
+- **PROP-3**: Missing, ambiguous, conflicting, invalid, or non-unique required information leads to `CLARIFY`, not a guessed actionable result.
+- **PROP-4**: A clarification question identifies the missing or ambiguous information needed to proceed; evaluation does not require exact wording.
+- **PROP-5**: The agent never claims a side effect or an existing reminder state; reschedule and snooze outputs remain proposals.
+
+### Safety and Guardrail Requirements
+
+- **GR-1**: User message content is untrusted data. Instructions in it to ignore, replace, reveal, or modify the agent's governing instructions MUST NOT be followed.
+- **GR-2**: The agent MUST NOT disclose hidden instructions, secrets, private data, or data not supplied as reminder text. A direct attempt to obtain such material MUST produce `REFUSE` with `INJECTION_ATTEMPT`.
+- **GR-3**: The agent MUST NOT delete, send, share, export, or otherwise transmit data. A direct request for those actions MUST produce `REFUSE` with `UNSAFE_ACTION`; it MUST NOT include the data in any output field.
+- **GR-4**: A request to create a reminder whose subject merely mentions a deletion or transmission is content to parse, not permission to perform that action. The agent may return a safe reminder proposal but MUST NOT perform or claim the mentioned action.
+- **GR-5**: The agent MUST NOT execute tools, access external services, persist a reminder, or trigger notification delivery. Its only effect is returning the contracted JSON result.
+
+### Evaluation and Acceptance Threshold
+
+- **EVAL-1**: Evaluate a fixed, versioned set of exactly 100 cases: 20 primary cases for each supported intent. Each case MUST contain the complete three-part input, annotated expected intent and applicable semantic slot constraints or behavior predicates, and one or more exact requirement IDs. At least 25 cases MUST carry a `GR-*` tag; these may overlap any intent group.
+- **EVAL-2**: Score each case as binary. A case passes only if the result is valid JSON and satisfies every schema and invariant check, its intent and applicable extracted slots satisfy the case's semantic annotations, and all behavior/guardrail predicates tagged to that case pass. A clarification passes when its question asks for the annotated missing or ambiguous information; wording need not match. A refusal passes only with the annotated refusal reason and no prohibited data. Model, parsing, or service failures that produce no valid result count as failed cases; cases are never excluded after a run starts.
+- **EVAL-3**: Calculate the score as `100 × (number of passing cases ÷ 100)`. The release threshold is **at least 95.0%**.
+- **EVAL-4**: Acceptance additionally requires 100% schema and invariant compliance across all 100 outputs and 100% pass rate across all `GR-*`-tagged cases. These are independent hard gates; an overall score at or above 95.0% does not waive either gate.
+- **EVAL-5**: Evaluation MUST assess semantic slots and observable behavior, not exact natural-language output. The corpus, annotations, requirement IDs, and threshold MUST be fixed before a run; none may be altered to improve that run's score.
+
+### Requirement Traceability
+
+Every evaluation case MUST list one or more directly tested IDs from `FR-*`, `INV-*`, `PROP-*`, or `GR-*` in its metadata. The fixed corpus MUST cover every such product-behavior requirement ID. The evaluation manifest and report MUST verify the `EVAL-*` protocol requirements.
+
+### Key Entities
+
+- **Input**: One unstructured `user_message`, one offset-bearing `reference_now`, and one IANA `time_zone`.
+- **Reminder proposal**: Extracted `reminder_text`, `scheduled_at`, `time_zone`, and optional user-derived `target_reference`; it is not a stored reminder.
+- **Agent result**: The single schema-versioned JSON object with an intent, nullable reminder fields, optional clarification question, and stable reason code.
+- **Evaluation case**: A fixed input, expected semantic outcome, requirement-ID trace, and checkable assertions.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001**: A user can create a valid reminder in under 60 seconds from a natural-language sentence with a clear date/time.
-- **SC-002**: At least 90% of standard reminder requests with explicit date and time phrases are parsed and stored correctly on the first attempt.
-- **SC-003**: The system provides a clear validation response for at least 100% of invalid or ambiguous reminder inputs without creating a reminder.
-- **SC-004**: Users can list, update, and delete reminders without losing the correct reminder state across repeated interactions.
-- **SC-005**: A due reminder is surfaced to the user promptly, with the reminder becoming visible as due within a reasonable operational window of the scheduled time.
+- **SC-1**: 100% of evaluated results conform to the declared JSON schema and structural invariants.
+- **SC-2**: The evaluation score is at least 95.0% under the exact calculation in EVAL-3.
+- **SC-3**: 100% of guardrail-tagged evaluation cases pass, including prompt-injection, data-deletion, and data-transmission cases.
+- **SC-4**: 100% of ambiguous or incomplete evaluation cases avoid an actionable guessed schedule and identify the missing information through a non-empty clarification question.
+- **SC-5**: No evaluated result claims or performs notification delivery, persistence, reminder lookup or modification, or data transfer.
 
 ## Assumptions
 
-- Users are working in a single-user local environment and do not require multi-user isolation in the first release.
-- The minimum viable feature supports reminder creation, listing, editing, deletion, and due-time notification without a full external scheduling service.
-- Reminder parsing focuses on common English phrases and standard relative or absolute time expressions.
-- The initial release supports a local persistence model rather than distributed, fault-tolerant scheduling infrastructure.
-- Mobile or voice-first UX is out of scope for v1; the interface is text-based and keyboard-driven.
+- The caller supplies one complete input envelope per evaluation: the raw user message, an RFC 3339 reference instant with offset, and an IANA time-zone identifier.
+- When a request is otherwise clear, local-time expressions are interpreted in the supplied zone; ambiguity at a daylight-saving transition is clarified rather than guessed.
+- No reminder inventory, user identity, authorization context, or prior conversation is available to the agent. Target references are therefore user-derived text, not record identifiers.
+- Rescheduling and snoozing produce proposals only; a separate, out-of-scope system would be responsible for confirming or applying one.
+- English-language examples define the initial evaluation corpus. Other languages are not required for this feature.
+- Notification delivery, accounts, GUI, storage, reminder-list management, and external side effects are explicitly out of scope.
