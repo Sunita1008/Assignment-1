@@ -3,11 +3,11 @@
 ## What's in this repository
 
 - **Part-1A** contains the Smart Todo CLI, its specifications, implementation, and harness.
-- **Part-1B** will be added later.
+- **Part-1B** contains the Natural-Language Reminder Agent, its specifications, implementation, evaluation harness and evidence. It passed its evaluation with a score of 100.0. See [Part-1B/README.md](Part-1B/README.md) for setup, how to run it, and results.
 
 ## Prerequisites
 
-- Java 17 or higher
+- Java 17 or higher (Part-1B needs Java 21)
 - Maven
 - PowerShell
 
