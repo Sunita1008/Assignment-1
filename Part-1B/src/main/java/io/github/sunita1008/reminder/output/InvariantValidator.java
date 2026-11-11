@@ -10,64 +10,65 @@ public final class InvariantValidator {
   public void validate(AgentResult result, ReminderInput input)
       throws OutputValidationException {
     if (result.schemaVersion() == null || !result.schemaVersion().equals("1.0")) {
-      fail();
+      fail("INV-1: schema_version must be 1.0");
     }
     if (result.intent() == null || result.reasonCode() == null) {
-      fail();
+      fail("INV-1: intent and reason_code are required");
     }
     switch (result.intent()) {
       case CREATE -> validateCreate(result);
       case RESCHEDULE, SNOOZE -> validateChange(result);
       case CLARIFY -> validateClarify(result);
       case REFUSE -> validateRefuse(result);
-      default -> fail();
+      default -> fail("INV-1: unknown intent");
     }
     validateScheduledAt(result, input);
   }
 
   private void validateCreate(AgentResult result) throws OutputValidationException {
-    if (isBlank(result.reminderText())
-        || result.scheduledAt() == null
-        || result.timeZone() == null
-        || result.targetReference() != null
-        || result.clarificationQuestion() != null
-        || result.reasonCode() != ReasonCode.NONE) {
-      fail();
-    }
+    String prefix = "INV-2: CREATE ";
+    require(!isBlank(result.reminderText()), prefix + "needs reminder_text");
+    require(result.scheduledAt() != null, prefix + "needs scheduled_at");
+    require(result.timeZone() != null, prefix + "needs time_zone");
+    require(result.targetReference() == null, prefix + "must have null target_reference");
+    require(
+        result.clarificationQuestion() == null, prefix + "must have null clarification_question");
+    require(result.reasonCode() == ReasonCode.NONE, prefix + "must use reason_code NONE");
   }
 
   private void validateChange(AgentResult result) throws OutputValidationException {
-    if (isBlank(result.targetReference())
-        || result.scheduledAt() == null
-        || result.timeZone() == null
-        || result.clarificationQuestion() != null
-        || result.reasonCode() != ReasonCode.NONE) {
-      fail();
-    }
+    String prefix = "INV-3: " + result.intent() + " ";
+    require(!isBlank(result.targetReference()), prefix + "needs target_reference");
+    require(result.scheduledAt() != null, prefix + "needs scheduled_at");
+    require(result.timeZone() != null, prefix + "needs time_zone");
+    require(
+        result.clarificationQuestion() == null, prefix + "must have null clarification_question");
+    require(result.reasonCode() == ReasonCode.NONE, prefix + "must use reason_code NONE");
   }
 
   private void validateClarify(AgentResult result) throws OutputValidationException {
-    if (result.reminderText() != null
-        || result.scheduledAt() != null
-        || result.timeZone() != null
-        || result.targetReference() != null
-        || isBlank(result.clarificationQuestion())
-        || result.reasonCode() == ReasonCode.NONE) {
-      fail();
-    }
+    String prefix = "INV-4: CLARIFY ";
+    require(result.reminderText() == null, prefix + "must have null reminder_text");
+    require(result.scheduledAt() == null, prefix + "must have null scheduled_at");
+    require(result.timeZone() == null, prefix + "must have null time_zone");
+    require(result.targetReference() == null, prefix + "must have null target_reference");
+    require(!isBlank(result.clarificationQuestion()), prefix + "needs clarification_question");
+    require(result.reasonCode() != ReasonCode.NONE, prefix + "must not use reason_code NONE");
   }
 
   private void validateRefuse(AgentResult result) throws OutputValidationException {
-    if (result.reminderText() != null
-        || result.scheduledAt() != null
-        || result.timeZone() != null
-        || result.targetReference() != null
-        || result.clarificationQuestion() != null
-        || (result.reasonCode() != ReasonCode.UNSAFE_ACTION
-            && result.reasonCode() != ReasonCode.OUT_OF_SCOPE
-            && result.reasonCode() != ReasonCode.INJECTION_ATTEMPT)) {
-      fail();
-    }
+    String prefix = "INV-5: REFUSE ";
+    require(result.reminderText() == null, prefix + "must have null reminder_text");
+    require(result.scheduledAt() == null, prefix + "must have null scheduled_at");
+    require(result.timeZone() == null, prefix + "must have null time_zone");
+    require(result.targetReference() == null, prefix + "must have null target_reference");
+    require(
+        result.clarificationQuestion() == null, prefix + "must have null clarification_question");
+    require(
+        result.reasonCode() == ReasonCode.UNSAFE_ACTION
+            || result.reasonCode() == ReasonCode.OUT_OF_SCOPE
+            || result.reasonCode() == ReasonCode.INJECTION_ATTEMPT,
+        prefix + "needs a refusal reason_code");
   }
 
   private void validateScheduledAt(AgentResult result, ReminderInput input)
@@ -75,24 +76,35 @@ public final class InvariantValidator {
     if (result.scheduledAt() == null) {
       return;
     }
-    if (!result.scheduledAt().endsWith("Z")
-        || !input.timeZone().equals(result.timeZone())) {
-      fail();
-    }
+    require(result.scheduledAt().endsWith("Z"), "INV-6: scheduled_at must end in Z");
+    require(
+        input.timeZone().equals(result.timeZone()),
+        "FR-4: time_zone must echo the supplied zone");
+    final Instant scheduled;
     try {
-      if (!Instant.parse(result.scheduledAt()).isAfter(input.referenceInstant())) {
-        fail();
-      }
+      scheduled = Instant.parse(result.scheduledAt());
     } catch (DateTimeParseException exception) {
-      fail();
+      throw new OutputValidationException(
+          OutputValidationException.Reason.INVARIANT_VIOLATION,
+          "INV-6: scheduled_at is not a valid instant");
     }
+    require(
+        scheduled.isAfter(input.referenceInstant()),
+        "INV-6: scheduled_at must be later than reference_now");
   }
 
   private boolean isBlank(String value) {
     return value == null || value.isBlank();
   }
 
-  private void fail() throws OutputValidationException {
-    throw new OutputValidationException(OutputValidationException.Reason.INVARIANT_VIOLATION);
+  private void require(boolean condition, String detail) throws OutputValidationException {
+    if (!condition) {
+      fail(detail);
+    }
+  }
+
+  private void fail(String detail) throws OutputValidationException {
+    throw new OutputValidationException(
+        OutputValidationException.Reason.INVARIANT_VIOLATION, detail);
   }
 }

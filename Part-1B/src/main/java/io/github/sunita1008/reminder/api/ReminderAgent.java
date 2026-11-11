@@ -18,6 +18,8 @@ import io.github.sunita1008.reminder.prompt.PromptBuilder;
 public final class ReminderAgent {
   private static final String INVALID_CONTEXT_QUESTION =
       "Please provide a valid reference time and IANA time zone.";
+  private static final String EMPTY_MESSAGE_QUESTION =
+      "What would you like me to remind you about, and when?";
 
   private final InputValidator inputValidator;
   private final PromptBuilder promptBuilder;
@@ -52,6 +54,9 @@ public final class ReminderAgent {
     try {
       input = inputValidator.parse(inputEnvelope);
     } catch (InputValidationException exception) {
+      if (exception.emptyMessage()) {
+        return AgentResult.clarify(EMPTY_MESSAGE_QUESTION, ReasonCode.MISSING_REMINDER_TEXT);
+      }
       return AgentResult.clarify(INVALID_CONTEXT_QUESTION, ReasonCode.INVALID_CONTEXT);
     }
     String generatedText = modelClient.complete(promptBuilder.build(input));

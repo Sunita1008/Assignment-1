@@ -77,6 +77,8 @@ public final class ReminderCli {
       return 3;
     } catch (OutputValidationException exception) {
       writeError("invalid_output", exception.reason().name(), output);
+      // Fixed rule text only (never model output); stdout keeps the one-object contract.
+      System.err.println("invalid output: " + exception.getMessage());
       return 4;
     } catch (JsonProcessingException exception) {
       writeError("invalid_output", "RESULT_SERIALIZATION", output);

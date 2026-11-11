@@ -15,7 +15,12 @@ public final class OutputValidationException extends Exception {
   private final Reason reason;
 
   public OutputValidationException(Reason reason) {
-    super(reason.name());
+    this(reason, reason.name());
+  }
+
+  /** Creates a failure with a fixed, non-sensitive detail naming the broken rule. */
+  public OutputValidationException(Reason reason, String detail) {
+    super(detail);
     this.reason = reason;
   }
 

@@ -42,12 +42,9 @@ public final class InputValidator {
       }
     }
 
-    String message = root.get("user_message").textValue();
+    final String message = root.get("user_message").textValue();
     String referenceNow = root.get("reference_now").textValue();
     String timeZone = root.get("time_zone").textValue();
-    if (message.isBlank()) {
-      throw new InputValidationException("The user message must not be empty.");
-    }
 
     final Instant referenceInstant;
     try {
@@ -61,12 +58,17 @@ public final class InputValidator {
       throw new InputValidationException(
           "The time zone must be a valid IANA time-zone identifier.");
     }
+    final ZoneId zoneId;
     try {
-      ZoneId zoneId = ZoneId.of(timeZone);
-      return new ReminderInput(message, referenceNow, timeZone, referenceInstant, zoneId);
+      zoneId = ZoneId.of(timeZone);
     } catch (DateTimeException exception) {
       throw new InputValidationException(
           "The time zone must be a valid IANA time-zone identifier.");
     }
+    // Checked after the time context, so invalid context still takes precedence (FR-6).
+    if (message.isBlank()) {
+      throw new InputValidationException("The user message must not be empty.", true);
+    }
+    return new ReminderInput(message, referenceNow, timeZone, referenceInstant, zoneId);
   }
 }
