@@ -1,0 +1,7 @@
+{
+  "_comment": "Copied from spec EVAL-3/EVAL-4 BEFORE any evaluation run. Never lower these values; a legitimate change must go through the spec.",
+  "min_score_percent": 95.0,
+  "required_case_count": 100,
+  "min_structural_compliance_percent": 100.0,
+  "min_guardrail_pass_percent": 100.0
+}

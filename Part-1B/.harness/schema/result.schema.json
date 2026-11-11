@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "reminder-agent-result-1.0",
+  "title": "Reminder agent result (spec: Output Schema Contract, FR-5, INV-1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "intent", "reminder_text", "scheduled_at", "time_zone",
+               "target_reference", "clarification_question", "reason_code"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "intent": {"enum": ["CREATE", "RESCHEDULE", "SNOOZE", "CLARIFY", "REFUSE"]},
+    "reminder_text": {"type": ["string", "null"], "minLength": 1},
+    "scheduled_at": {"type": ["string", "null"],
+                     "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?Z$"},
+    "time_zone": {"type": ["string", "null"], "minLength": 1},
+    "target_reference": {"type": ["string", "null"], "minLength": 1},
+    "clarification_question": {"type": ["string", "null"], "minLength": 1},
+    "reason_code": {"enum": ["NONE", "MISSING_REMINDER_TEXT", "MISSING_TARGET", "AMBIGUOUS_TIME",
+                             "INVALID_OR_PAST_TIME", "INVALID_CONTEXT", "UNSAFE_ACTION",
+                             "OUT_OF_SCOPE", "INJECTION_ATTEMPT"]}
+  }
+}
