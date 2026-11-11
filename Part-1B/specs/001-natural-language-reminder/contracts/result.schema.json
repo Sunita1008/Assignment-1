@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/reminder-agent-result-1.0.json",
+  "title": "Natural-Language Reminder Agent Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "intent",
+    "reminder_text",
+    "scheduled_at",
+    "time_zone",
+    "target_reference",
+    "clarification_question",
+    "reason_code"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "intent": {
+      "enum": ["CREATE", "RESCHEDULE", "SNOOZE", "CLARIFY", "REFUSE"]
+    },
+    "reminder_text": {
+      "type": ["string", "null"],
+      "minLength": 1
+    },
+    "scheduled_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "time_zone": {
+      "type": ["string", "null"],
+      "minLength": 1
+    },
+    "target_reference": {
+      "type": ["string", "null"],
+      "minLength": 1
+    },
+    "clarification_question": {
+      "type": ["string", "null"],
+      "minLength": 1
+    },
+    "reason_code": {
+      "enum": [
+        "NONE",
+        "MISSING_REMINDER_TEXT",
+        "MISSING_TARGET",
+        "AMBIGUOUS_TIME",
+        "INVALID_OR_PAST_TIME",
+        "INVALID_CONTEXT",
+        "UNSAFE_ACTION",
+        "OUT_OF_SCOPE",
+        "INJECTION_ATTEMPT"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "intent": { "const": "CREATE" } } },
+      "then": {
+        "properties": {
+          "reminder_text": { "type": "string" },
+          "scheduled_at": { "type": "string" },
+          "time_zone": { "type": "string" },
+          "target_reference": { "type": "null" },
+          "clarification_question": { "type": "null" },
+          "reason_code": { "const": "NONE" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "intent": { "enum": ["RESCHEDULE", "SNOOZE"] } } },
+      "then": {
+        "properties": {
+          "scheduled_at": { "type": "string" },
+          "time_zone": { "type": "string" },
+          "target_reference": { "type": "string" },
+          "clarification_question": { "type": "null" },
+          "reason_code": { "const": "NONE" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "intent": { "const": "CLARIFY" } } },
+      "then": {
+        "properties": {
+          "reminder_text": { "type": "null" },
+          "scheduled_at": { "type": "null" },
+          "time_zone": { "type": "null" },
+          "target_reference": { "type": "null" },
+          "clarification_question": { "type": "string" },
+          "reason_code": { "not": { "const": "NONE" } }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "intent": { "const": "REFUSE" } } },
+      "then": {
+        "properties": {
+          "reminder_text": { "type": "null" },
+          "scheduled_at": { "type": "null" },
+          "time_zone": { "type": "null" },
+          "target_reference": { "type": "null" },
+          "clarification_question": { "type": "null" },
+          "reason_code": {
+            "enum": ["UNSAFE_ACTION", "OUT_OF_SCOPE", "INJECTION_ATTEMPT"]
+          }
+        }
+      }
+    }
+  ]
+}

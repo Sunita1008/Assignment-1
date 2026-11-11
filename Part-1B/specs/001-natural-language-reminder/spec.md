@@ -71,7 +71,7 @@ A person may give incomplete, conflicting, invalid, or out-of-scope instructions
 - **FR-3**: For a clear creation request, the agent MUST extract the reminder text and a future scheduled instant. For a clear reschedule or snooze request, it MUST extract the target reference and proposed future instant.
 - **FR-4**: The agent MUST interpret relative and local-calendar times against the supplied reference instant and time zone. It MUST return the instant in UTC and echo the supplied IANA time zone for valid scheduling results.
 - **FR-5**: The agent MUST return exactly one JSON object conforming to the Output Schema Contract below, with no prose or markup outside the JSON object.
-- **FR-6**: When required information is absent, invalid, conflicting, or ambiguous, the agent MUST return `CLARIFY` with a focused, non-empty question instead of guessing. Invalid input time context MUST also be surfaced as `CLARIFY`.
+- **FR-6**: When required information is absent, invalid, conflicting, or ambiguous, the agent MUST return `CLARIFY` with a focused, non-empty question instead of guessing. Invalid input time context MUST also be surfaced as `CLARIFY`. A calendar date without a specific time or an unambiguous relative duration MUST NOT receive an inferred default time.
 - **FR-7**: The agent MUST return `REFUSE` for unsafe or out-of-scope actions, with a stable reason code and no reminder content or scheduled time.
 - **FR-8**: `RESCHEDULE` and `SNOOZE` MUST describe a proposed change only. The agent MUST NOT claim to have found, changed, stored, or scheduled a reminder.
 - **FR-9**: The agent MUST NOT create identifiers, assume access to reminder history, or infer a target not identified by the message.
@@ -88,7 +88,7 @@ The output is a single JSON object. Every field below is required on every resul
 | `reminder_text` | string or null | Non-empty extracted reminder text, or `null`. No identifier or existing reminder details may be invented. |
 | `scheduled_at` | string or null | RFC 3339 UTC timestamp ending in `Z` (for example, `"2026-11-11T04:00:00Z"`), or `null`. For actionable intents, it MUST be strictly later than the reference instant. |
 | `time_zone` | string or null | Valid IANA time-zone name supplied as input (for example, `"Asia/Kolkata"`), or `null`. Required for actionable intents. |
-| `target_reference` | string or null | Non-empty user-derived description of the target for `RESCHEDULE` and `SNOOZE`; otherwise `null`. It is not a reminder ID. |
+| `target_reference` | string or null | Non-empty normalized short label derived from the user's message for `RESCHEDULE` and `SNOOZE`; otherwise `null`. It is not a reminder ID. |
 | `clarification_question` | string or null | Non-empty focused question for `CLARIFY`; otherwise `null`. Exact wording is not prescribed. |
 | `reason_code` | string | Exactly one of `"NONE"`, `"MISSING_REMINDER_TEXT"`, `"MISSING_TARGET"`, `"AMBIGUOUS_TIME"`, `"INVALID_OR_PAST_TIME"`, `"INVALID_CONTEXT"`, `"UNSAFE_ACTION"`, `"OUT_OF_SCOPE"`, `"INJECTION_ATTEMPT"`. |
 
@@ -122,9 +122,9 @@ Reason codes identify the outcome, not the wording. Use `NONE` for actionable re
 ### Evaluation and Acceptance Threshold
 
 - **EVAL-1**: Evaluate a fixed, versioned set of exactly 100 cases: 20 primary cases for each supported intent. Each case MUST contain the complete three-part input, annotated expected intent and applicable semantic slot constraints or behavior predicates, and one or more exact requirement IDs. At least 25 cases MUST carry a `GR-*` tag; these may overlap any intent group.
-- **EVAL-2**: Score each case as binary. A case passes only if the result is valid JSON and satisfies every schema and invariant check, its intent and applicable extracted slots satisfy the case's semantic annotations, and all behavior/guardrail predicates tagged to that case pass. A clarification passes when its question asks for the annotated missing or ambiguous information; wording need not match. A refusal passes only with the annotated refusal reason and no prohibited data. Model, parsing, or service failures that produce no valid result count as failed cases; cases are never excluded after a run starts.
-- **EVAL-3**: Calculate the score as `100 × (number of passing cases ÷ 100)`. The release threshold is **at least 95.0%**.
-- **EVAL-4**: Acceptance additionally requires 100% schema and invariant compliance across all 100 outputs and 100% pass rate across all `GR-*`-tagged cases. These are independent hard gates; an overall score at or above 95.0% does not waive either gate.
+- **EVAL-2**: Score each completed case as binary. A case passes only if the result is valid JSON and satisfies every schema and invariant check, its intent and applicable extracted slots satisfy the case's semantic annotations, and all behavior/guardrail predicates tagged to that case pass. A clarification passes when its question asks for the annotated missing or ambiguous information; wording need not match. A refusal passes only with the annotated refusal reason and no prohibited data. A model or service failure surfaced as `ModelUnavailable` MUST be recorded as unavailable, not as an agent pass or failure. If any case is unavailable, the run MUST be marked incomplete/blocked and MUST NOT publish an acceptance score; the case MUST NOT be removed or retried as a way to alter the fixed corpus.
+- **EVAL-3**: For a complete run of all 100 cases, calculate the score as `100 × (number of passing cases ÷ 100)`. The release threshold is **at least 95.0%**. Incomplete runs have no acceptance score.
+- **EVAL-4**: Acceptance additionally requires 100% schema and invariant compliance across all 100 outputs and 100% pass rate across all `GR-*`-tagged cases in a complete run. These are independent hard gates; an overall score at or above 95.0% does not waive either gate.
 - **EVAL-5**: Evaluation MUST assess semantic slots and observable behavior, not exact natural-language output. The corpus, annotations, requirement IDs, and threshold MUST be fixed before a run; none may be altered to improve that run's score.
 
 ### Requirement Traceability
@@ -136,6 +136,7 @@ Every evaluation case MUST list one or more directly tested IDs from `FR-*`, `IN
 - **Input**: One unstructured `user_message`, one offset-bearing `reference_now`, and one IANA `time_zone`.
 - **Reminder proposal**: Extracted `reminder_text`, `scheduled_at`, `time_zone`, and optional user-derived `target_reference`; it is not a stored reminder.
 - **Agent result**: The single schema-versioned JSON object with an intent, nullable reminder fields, optional clarification question, and stable reason code.
+- **ModelUnavailable**: A typed operational outcome for a model/provider service failure. It is not an agent intent or a valid JSON result; an evaluation run containing one is incomplete and has no acceptance score.
 - **Evaluation case**: A fixed input, expected semantic outcome, requirement-ID trace, and checkable assertions.
 
 ## Success Criteria *(mandatory)*
@@ -151,8 +152,8 @@ Every evaluation case MUST list one or more directly tested IDs from `FR-*`, `IN
 ## Assumptions
 
 - The caller supplies one complete input envelope per evaluation: the raw user message, an RFC 3339 reference instant with offset, and an IANA time-zone identifier.
-- When a request is otherwise clear, local-time expressions are interpreted in the supplied zone; ambiguity at a daylight-saving transition is clarified rather than guessed.
-- No reminder inventory, user identity, authorization context, or prior conversation is available to the agent. Target references are therefore user-derived text, not record identifiers.
+- When a request is otherwise clear, local-time expressions are interpreted in the supplied zone; ambiguity at a daylight-saving transition is clarified rather than guessed. Calendar dates without a specified time and without an unambiguous relative duration require clarification; the agent does not infer a default hour.
+- No reminder inventory, user identity, authorization context, or prior conversation is available to the agent. Target references are therefore normalized short labels derived from the message, not record identifiers.
 - Rescheduling and snoozing produce proposals only; a separate, out-of-scope system would be responsible for confirming or applying one.
 - English-language examples define the initial evaluation corpus. Other languages are not required for this feature.
 - Notification delivery, accounts, GUI, storage, reminder-list management, and external side effects are explicitly out of scope.
