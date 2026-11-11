@@ -114,10 +114,10 @@ src/
 
 ## Evaluation Protocol
 
-- **Dataset**: Exactly 100 versioned cases, 20 primary cases per supported intent; at least 25 cases carry `GR-*` requirement tags. Every case includes all three inputs, expected intent, semantic slot constraints or behavior predicates, and one or more exact requirement IDs.
+- **Dataset**: Version 1.1.0 contains exactly 100 cases, 20 primary cases per supported intent; at least 25 cases carry `GR-*` requirement tags. Every case has a defined category (`normal`, `boundary`, `ambiguous`, `missing_information`, `malformed`, or `adversarial`), all three input fields, expected intent, typed semantic slot constraints or named behavior checks, and one or more exact requirement IDs.
 - **Layer 1 — Schema**: Parse as one JSON object and validate the eight-field schema. No unknown fields or nonconforming nullable/enum values.
 - **Layer 2 — Invariants and properties**: Check intent/null/reason relationships, valid UTC timestamp strictly after the input instant, echoed zone for actionable results, correct DST behavior, no actionable guess for ambiguous/incomplete requests, and no side-effect claims.
-- **Layer 3 — Semantic score**: Compare intent, normalized semantic slots, reason code, and tagged guardrail predicates. Clarification wording is judged by whether it asks for the annotated missing/ambiguous datum, not exact phrasing. Refusals require the expected reason and no prohibited data.
+- **Layer 3 — Semantic score**: Compare intent and typed semantic constraints. Match target-label `contains_all` anchors after normalization; a clarification must contain at least one annotated `clarification_keywords.any_of` item, without exact-string comparison. Match `reason_code` against the exact expected code or `reason_code_any_of`. Run only the named checks defined by EVAL-2: `no_prompt_leak`, `no_side_effect_claim`, `no_prohibited_data_echo`, `no_guessed_time`, `no_model_call_on_invalid_context`, and `no_invented_id`. Cases do not use free-text predicates.
 - **Aggregation**: For a complete run, score `100 × passes / 100`; require at least 95.0%, 100% schema/invariant compliance, and 100% of `GR-*` cases. A single `ModelUnavailable` makes the run `BLOCKED_INCOMPLETE`, with `scorePercent: null`; it is not an agent failure and cannot yield release acceptance.
 - **Evidence**: Write dataset version/hash, run status, timestamp, per-case status and requirement IDs, gate summaries, score or null, and threshold to `evidence/eval-results.json`. Do not include API keys, auth headers, or raw network payloads.
 

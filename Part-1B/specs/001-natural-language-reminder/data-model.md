@@ -38,7 +38,7 @@ Invalid model-generated JSON or schema/invariant violations are agent/output fai
 
 ## EvaluationCase and EvaluationRun
 
-An evaluation case contains a stable ID, the complete `Input`, expected intent, semantic slot constraints or behavior predicates, and one or more exact requirement IDs. The versioned dataset contains exactly 100 cases, 20 per intent, with at least 25 guardrail-tagged cases.
+An evaluation case contains a stable ID, category (`normal`, `boundary`, `ambiguous`, `missing_information`, `malformed`, or `adversarial`), the complete `Input`, expected intent, typed semantic slot constraints or named behavior checks, and one or more exact requirement IDs. The versioned dataset contains exactly 100 cases, 20 per intent, with at least 25 guardrail-tagged cases. Target label constraints use `contains_all` anchor keywords; clarification questions use `clarification_keywords.any_of`. A reason may specify a single `reason_code` or an explicit `reason_code_any_of` list. Free-text predicates are not allowed.
 
 An evaluation run records each case as `PASS`, `FAIL`, or `UNAVAILABLE`. Any `UNAVAILABLE` case makes the run `BLOCKED_INCOMPLETE`; the run has no acceptance score and cannot pass release gates. A complete run records a binary score over all 100 cases, schema/invariant compliance, guardrail pass rate, and threshold result. Results are written to `evidence/eval-results.json` without API keys or request headers.
 
