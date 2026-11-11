@@ -2,11 +2,11 @@
 
 ## Prerequisites
 
-- JDK 17
+- JDK 21
 - Maven
-- For a live model call only: `MODEL_PROVIDER`, `MODEL_NAME`, `MODEL_API_KEY`, and `MODEL_BASE_URL` for an OpenAI-compatible chat-completions endpoint.
+- For a model request: `MODEL_API_KEY`, `MODEL_PROVIDER`, and `MODEL_NAME` in the process environment.
 
-The unit and evaluation tests use `FakeModelClient` and do not require network access or real credentials.
+For `MODEL_PROVIDER=gemini`, the client uses the OpenAI-compatible endpoint documented in `plan.md`. Tests use `FakeModelClient` and do not call a live model.
 
 ## Build and quality gates
 
@@ -16,24 +16,18 @@ From `Part-1B`:
 mvn verify
 ```
 
-The verify lifecycle runs JUnit 5, Checkstyle with `google_checks` and zero warnings, and SpotBugs with Find Security Bugs. No gate is advisory.
+This runs JUnit 5, Google Checkstyle, and SpotBugs with Find Security Bugs. The executable fat JAR is `target/reminder-agent.jar`.
 
-## Exercise a deterministic agent request
+## Run the CLI
 
-Use the public agent API in a test with a `FakeModelClient` scripted with one response from `evals/dataset.json`. The test must assert the returned `AgentResult`, schema validation, and invariant validation. The fake must consume exactly the scripted response expected by the test and fail explicitly if no response is available.
-
-## Run the evaluation
-
-With valid model environment variables:
+From `Part-1B`, pass one JSON envelope to stdin:
 
 ```powershell
-mvn exec:java -Dexec.args="eval evals/dataset.json"
+@'
+{"user_message":"Remind me to call the dentist tomorrow at 9:30 AM","reference_now":"2026-11-11T10:00:00+05:30","time_zone":"Asia/Kolkata"}
+'@ | java -jar target/reminder-agent.jar run
 ```
 
-The runner validates the fixed dataset, executes the three scoring layers, and writes `evidence/eval-results.json`. A run is complete only when all 100 cases return agent results. If a case returns `ModelUnavailable`, the report records the category, marks the run `BLOCKED_INCOMPLETE`, leaves the acceptance score null, and does not count that case as an agent failure. No acceptance claim is made for an incomplete run.
+On success, stdout contains exactly one eight-field result object conforming to `.harness/schema/result.schema.json`, and the process exits 0. A model/service outage produces `{"unavailable":"<CATEGORY>"}` and exit 3. Rejected generated output produces `{"invalid_output":"<reason>"}` and exit 4. Credentials are never included in output or logs.
 
-## Manual request
-
-Invoke the one-shot `run` command with one JSON input envelope containing exactly `user_message`, `reference_now`, and `time_zone`. A successful call writes only the validated eight-field result JSON. A model outage is surfaced as the distinct `ModelUnavailable` operational outcome and must not be serialized as one of the five intents.
-
-See [the result contract](contracts/result.schema.json), [data model](data-model.md), and [fixed evaluation dataset](evals/dataset.json).
+The Python evaluation harness is independent of the Java agent. It owns dataset loading, scoring, and evidence; the Java agent never reads `evals/`.

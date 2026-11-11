@@ -2,48 +2,44 @@
 
 ## Decisions
 
-### Java 17 and Maven application
+### Java 21 Maven application
 
-- **Decision**: Implement a small, single-project Java 17 application with Maven and a one-shot command-line entry point. Keep the agent callable as a Java API so tests and future callers do not depend on stdin/stdout.
-- **Rationale**: This meets the platform requirements without adding a GUI, server, persistence layer, or deployment framework.
-- **Alternatives considered**: A web service would add endpoints and operations not requested by the spec; a CLI-only design would make the orchestration harder to reuse and test.
+- **Decision**: Implement a Java 21 Maven application with an API and one-shot executable CLI packaged as `target/reminder-agent.jar`.
+- **Rationale**: The CLI is the independent harness boundary; an API keeps core orchestration testable without subprocesses.
+- **Alternatives considered**: A server, persistence layer, or provider SDK would add scope and coupling not required by the feature.
 
-### Model access through `ModelClient`
+### Model access and configuration
 
-- **Decision**: Define a narrow `ModelClient` interface that accepts prompt messages and returns provider text. The production `HttpModelClient` uses Java 17 `java.net.http.HttpClient`; a test-only `FakeModelClient` returns an ordered, scripted response sequence.
-- **Rationale**: The seam isolates network behavior from interpretation logic and allows deterministic tests with no network. Production configuration reads `MODEL_PROVIDER`, `MODEL_NAME`, and `MODEL_API_KEY`; `MODEL_BASE_URL` selects the endpoint for the documented OpenAI-compatible chat-completions protocol. Do not log the key or full request headers.
-- **Alternatives considered**: Provider SDKs would couple the implementation to a vendor; a second provider-specific client is not needed for the initial compatible protocol.
+- **Decision**: Keep model access behind `ModelClient`. Read `MODEL_API_KEY`, `MODEL_PROVIDER`, and `MODEL_NAME` from the process environment only. Use the OpenAI-compatible Gemini endpoint from `plan.md` for `MODEL_PROVIDER=gemini`; use the OpenAI chat-completions endpoint for `MODEL_PROVIDER=openai`. Keep `FakeModelClient` in test sources.
+- **Rationale**: The seam isolates network behavior and enables deterministic tests. The API key is used only in the authorization header and is never logged or written.
+- **Alternatives considered**: Provider SDKs would couple the implementation to vendors; reading credentials from files or command-line arguments would expand the secret-handling surface.
 
-### Failure taxonomy and evaluation
+### Failure and CLI contract
 
-- **Decision**: The agent returns a typed `AgentOutcome`: either a schema-validated `AgentResult` or a distinct `ModelUnavailable` outcome. Timeout, rate-limit, network, non-success HTTP, and unusable provider-response failures map to `ModelUnavailable`; malformed model-generated result JSON remains an agent/output-validation failure. The evaluation runner records unavailable cases and marks the run `BLOCKED_INCOMPLETE`, with a null acceptance score. It does not count unavailable cases as agent failures or publish a partial acceptance score.
-- **Rationale**: This implements the user's clarification and constitution requirements without weakening the spec's fixed corpus or binary scoring for completed cases. An unavailable case is never removed from the corpus. `ModelUnavailable` is an operational Java outcome, not a sixth JSON intent and not a schema-valid agent response.
-- **Alternatives considered**: Counting outages as model-quality failures confounds infrastructure with agent behavior; dropping unavailable cases and scoring a smaller denominator could inflate acceptance.
+- **Decision**: A model/service failure is a typed `ModelUnavailable` with a stable category. The CLI emits `{"unavailable":"<CATEGORY>"}` and exits 3. Invalid generated output emits `{"invalid_output":"<reason>"}` and exits 4. A validated `AgentResult` is emitted as the eight-field schema object and exits 0.
+- **Rationale**: Operational failures remain distinct from model-produced intents and rejected output. Failure envelopes are CLI protocol objects, not `AgentResult`s.
+- **Alternatives considered**: Converting outages into `CLARIFY` or `REFUSE` misrepresents the failure; emitting malformed model text would bypass validation.
 
-### JSON parsing and schema validation
+### Parsing and schema validation
 
-- **Decision**: Use Jackson for strict JSON parsing/serialization and NetworkNT JSON Schema Validator with a checked-in Draft 2020-12 schema. Reject trailing text, duplicate keys, unknown properties, type coercion, and invalid schema values. Apply Java invariant checks after schema validation and before returning an `AgentResult`.
-- **Rationale**: Schema validation handles the published structural contract; invariant validation handles constraints that depend on the input reference instant and intent relationships.
-- **Alternatives considered**: Hand-written field validation alone duplicates schema rules and is harder to audit; the schema alone cannot express every time-dependent invariant.
+- **Decision**: Use Jackson for strict input/result parsing and serialization, NetworkNT for Draft 2020-12 validation, and Java invariants for intent-dependent nullability and input-relative scheduling. Package the protected `.harness/schema/result.schema.json` into the runnable JAR during the build without modifying the source schema.
+- **Rationale**: The schema enforces the structural contract; Java checks enforce relationships that depend on the input instant and time zone.
+- **Alternatives considered**: A second independently maintained schema could drift; hand-written checks alone would duplicate structural rules.
 
 ### Prompt construction and guardrails
 
-- **Decision**: Keep versioned prompt resources under `src/main/resources/prompts/`. `PromptBuilder` loads static system/task instructions and serializes the three-field input envelope as a separate user-data message. The model has no tools. The application validates every result; it never relies on prompt wording as the only output safeguard.
-- **Rationale**: Separating instructions from user content makes the trust boundary explicit and enables prompt review/versioning. Output validation enforces the schema, time, nullability, and refusal invariants independently of model behavior.
-- **Alternatives considered**: Building instructions by concatenating raw message text into a system prompt blurs authority and data; giving the model tools would violate GR-5.
+- **Decision**: Keep versioned prompt resources in `src/main/resources/prompts/`. Send static system instructions separately from a JSON-serialized user-data message. Give the model no tools, and validate every generated result before output.
+- **Rationale**: The trust boundary remains explicit and prompt instructions are not the only enforcement mechanism.
+- **Alternatives considered**: Interpolating raw user text into system instructions or granting model tools would violate the feature's trust and side-effect boundaries.
 
-### Evaluation harness and evidence
+### Independent evaluation
 
-- **Decision**: Store a versioned, fixed 100-case corpus in `evals/dataset.json` (20 primary cases for each intent). Each case has a complete input envelope, semantic expected outcome, and requirement IDs. The evaluator runs schema, invariant/property, and semantic/guardrail layers in order; it checks full corpus traceability and emits `evidence/eval-results.json`.
-- **Rationale**: This directly implements EVAL-1 through EVAL-5 and the constitution's auditability requirement. Semantic comparisons use annotated slots and predicates rather than exact clarification wording.
-- **Alternatives considered**: Exact string matching is brittle for natural language; relying only on model self-assessment is not an independent evaluator.
+- **Decision**: Evaluation belongs exclusively to the Python harness under `Part-1B/.harness/`, which uses the protected `Part-1B/evals/dataset.json` v1.1.0. The Java agent contains no evaluator, scorer, dataset loader, or evaluation report writer.
+- **Rationale**: Evaluation remains independent of the agent implementation; the fixed corpus and harness are read-only inputs.
+- **Alternatives considered**: Embedding evaluation in the agent would violate the CLI separation and could let agent changes affect scoring.
 
-### Clarified product behavior
+### Product behavior
 
-- **Decision**: V1 is English-only. `target_reference` is a normalized short label grounded in the message, not a quote or identifier. If a calendar date has no specific clock time and no unambiguous relative duration supplies an instant, ask for clarification; never invent a default hour.
-- **Rationale**: These are the user's explicit clarifications and are reflected in the feature spec.
-- **Alternatives considered**: Multilingual support and a default reminder hour require additional policy and evaluation coverage not in the clarified scope.
-
-## Resolved Technical Context
-
-No unresolved technology choices remain for the planned v1. The provider endpoint must implement the documented OpenAI-compatible chat-completions request/response format; incompatible provider protocols require a separately scoped adapter.
+- **Decision**: V1 is English-only. `target_reference` is a short label grounded in the message, not an identifier. A date without a specific time or unambiguous relative duration requires clarification. Rescheduling and snoozing produce proposals only.
+- **Rationale**: No reminder inventory, identity, authorization context, or prior conversation is available.
+- **Alternatives considered**: Default clock times, record lookup, and side-effectful operations require separate policy and scope.
