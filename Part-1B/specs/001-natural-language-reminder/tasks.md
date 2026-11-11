@@ -138,4 +138,4 @@ Configuration-only change made before any scored run (see "Model configuration" 
 
 - [x] T037 Extend `ModelConfigurationTest` for the `aicredits` provider, the `MODEL_BASE_URL` override (trailing-slash normalization, rejection of non-https or relative URLs), and the reasoning-model temperature rule.
 - [x] T038 Implement the `aicredits` provider (`https://api.aicredits.in/v1/`), the optional `MODEL_BASE_URL` override, and the reasoning-model temperature rule in `ModelConfiguration`. `HttpModelClient` omits `temperature` for reasoning models and uses a 60-second request timeout.
-- [ ] T039 Rebuild with `mvn clean verify`, then run the protected harness with `MODEL_PROVIDER=aicredits` and `MODEL_NAME=openai/gpt-5-mini` (requires the student's API key).
+- [ ] T039 Rebuild with `mvn clean verify`, then run the protected harness with `MODEL_PROVIDER=aicredits` and `MODEL_NAME=anthropic/claude-haiku-5.5` (requires the student's API key).

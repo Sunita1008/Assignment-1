@@ -44,7 +44,7 @@ Read `MODEL_API_KEY`, `MODEL_PROVIDER`, and `MODEL_NAME` from the environment, p
 - Reasoning model families (`gpt-5*`, `o1*`, `o3*`, `o4*`, including a `vendor/` prefix such as `openai/gpt-5-mini`) accept only the default sampling temperature, so the request omits `temperature` for them; other models keep `temperature: 0`.
 - The request timeout is 60 seconds (connect timeout 5 seconds), because reasoning models take longer to answer.
 
-**Amendment (2026-11-12, before any scored run):** The provider changed from Gemini (`gemini-3.5-flash`) to the AI Credits aggregator (`MODEL_PROVIDER=aicredits`, `MODEL_NAME=openai/gpt-5-mini`). The Gemini free tier allowed only about 5 requests per minute and a small daily cap, so both evaluation attempts ended `BLOCKED_INCOMPLETE` (kept in `evidence/eval-runs/`). This is a configuration and transport change only. The spec, prompts, output contract, dataset, harness, and threshold are unchanged.
+**Amendment (2026-11-12, before any scored run):** The provider changed from Gemini (`gemini-3.5-flash`) to the AI Credits aggregator (`MODEL_PROVIDER=aicredits`, `MODEL_NAME=anthropic/claude-haiku-5.5`). `openai/gpt-5-mini` was tried first, but the API key is not permitted to use it (HTTP 403), so the key's permitted model, Claude Haiku 5.5, is used. It is not a reasoning-model family, so the request keeps `temperature: 0`. The Gemini free tier allowed only about 5 requests per minute and a small daily cap, so both evaluation attempts ended `BLOCKED_INCOMPLETE` (kept in `evidence/eval-runs/`). This is a configuration and transport change only. The spec, prompts, output contract, dataset, harness, and threshold are unchanged.
 
 ## Constitution Check
 

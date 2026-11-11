@@ -10,7 +10,7 @@ The current setup uses the AI Credits aggregator:
 
 ```powershell
 $env:MODEL_PROVIDER = "aicredits"
-$env:MODEL_NAME     = "openai/gpt-5-mini"
+$env:MODEL_NAME     = "anthropic/claude-haiku-5.5"
 $env:MODEL_API_KEY  = "<your AI Credits key>"   # never commit this
 ```
 
