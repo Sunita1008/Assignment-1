@@ -1,5 +1,6 @@
 package io.github.sunita1008.reminder.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +27,7 @@ public final class HttpModelClient implements ModelClient {
     this(
         configuration,
         HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build(),
-        Duration.ofSeconds(30));
+        Duration.ofSeconds(60));
   }
 
   HttpModelClient(
@@ -42,7 +43,10 @@ public final class HttpModelClient implements ModelClient {
     try {
       requestBody =
           MAPPER.writeValueAsString(
-              new CompletionRequest(configuration.modelName(), messages, 0));
+              new CompletionRequest(
+                  configuration.modelName(),
+                  messages,
+                  configuration.supportsTemperature() ? Integer.valueOf(0) : null));
     } catch (JsonProcessingException exception) {
       throw new ModelUnavailable(Category.PROVIDER_PROTOCOL, "Could not encode model request.");
     }
@@ -74,9 +78,39 @@ public final class HttpModelClient implements ModelClient {
     }
     if (response.statusCode() < 200 || response.statusCode() >= 300) {
       throw new ModelUnavailable(
-          Category.HTTP_ERROR, "Model service returned a non-success status.");
+          Category.HTTP_ERROR,
+          "Model service returned HTTP "
+              + response.statusCode()
+              + providerError(response.body()));
     }
     return extractContent(response.body());
+  }
+
+  /**
+   * Returns the provider's error message for diagnostics: one line, at most 200 characters, with
+   * the API key removed. Returns an empty string when the body has no readable error message.
+   */
+  String providerError(String body) {
+    String message;
+    try {
+      JsonNode root = MAPPER.readTree(body);
+      JsonNode error = root == null ? null : root.path("error");
+      if (error == null || error.isMissingNode()) {
+        return "";
+      }
+      message = error.isTextual() ? error.textValue() : error.path("message").asText("");
+    } catch (JsonProcessingException exception) {
+      return "";
+    }
+    String apiKey = configuration.apiKey();
+    if (!apiKey.isEmpty()) {
+      message = message.replace(apiKey, "[REDACTED]");
+    }
+    message = message.replaceAll("\\s+", " ").strip();
+    if (message.length() > 200) {
+      message = message.substring(0, 200);
+    }
+    return message.isEmpty() ? "" : ": " + message;
   }
 
   private String extractContent(String body) throws ModelUnavailable {
@@ -99,5 +133,7 @@ public final class HttpModelClient implements ModelClient {
     return content.textValue();
   }
 
-  private record CompletionRequest(String model, List<ChatMessage> messages, int temperature) {}
+  /** Request body; {@code temperature} is omitted when null (reasoning models). */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  record CompletionRequest(String model, List<ChatMessage> messages, Integer temperature) {}
 }

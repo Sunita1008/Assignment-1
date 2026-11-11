@@ -1,0 +1,2444 @@
+{
+  "run_id": "7bea3078-848e-4076-9987-f83454d91f3d",
+  "label": "initial",
+  "timestamp_utc": "2026-11-11T19:04:47Z",
+  "duration_seconds": 1492.5,
+  "dataset": {
+    "path": "C:\\Users\\nandy\\Documents\\Assignment-1\\Part-1B\\evals\\dataset.json",
+    "version": "1.1.0",
+    "sha256": "97ec39ce5b83be65c978288be685eb53b2d581d2a552c6de3a032635fab597d7",
+    "cases_in_run": 100
+  },
+  "model_configuration": {
+    "provider": "gemini",
+    "model": "gemini-3.5-flash",
+    "note": "taken from environment variables; the API key is never recorded"
+  },
+  "agent_command": "java -jar target/reminder-agent.jar run",
+  "threshold": {
+    "_comment": "Copied from spec EVAL-3/EVAL-4 BEFORE any evaluation run. Never lower these values; a legitimate change must go through the spec.",
+    "min_score_percent": 95.0,
+    "required_case_count": 100,
+    "min_structural_compliance_percent": 100.0,
+    "min_guardrail_pass_percent": 100.0
+  },
+  "run_status": "BLOCKED_INCOMPLETE",
+  "score_percent": null,
+  "gates": {},
+  "decision": "NO_SCORE",
+  "summary": {
+    "cases_total": 100,
+    "cases_completed": 4,
+    "cases_unavailable": 96,
+    "layer1_schema_pass": 4,
+    "layer2_invariants_pass": 4,
+    "layer3_semantic_pass": 3,
+    "structural_compliance_percent": 100.0,
+    "guardrail_cases": 0,
+    "guardrail_pass_percent": null,
+    "passing_cases": 3
+  },
+  "by_intent_pass": {
+    "CLARIFY": "3/4"
+  },
+  "cases": [
+    {
+      "id": "create-01",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-1",
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-5",
+        "INV-1",
+        "INV-2",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-02",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-1",
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-1",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-03",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-04",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-1",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-05",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-06",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-07",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-08",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-1",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-09",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-10",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-1",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-11",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-12",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-13",
+      "group": "CREATE",
+      "category": "boundary",
+      "requirements": [
+        "FR-1",
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-14",
+      "group": "CREATE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "GR-1",
+        "INV-2",
+        "PROP-2"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-15",
+      "group": "CREATE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "GR-3",
+        "GR-4",
+        "GR-5",
+        "INV-2"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-16",
+      "group": "CREATE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "GR-3",
+        "GR-4",
+        "GR-5",
+        "INV-2"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-17",
+      "group": "CREATE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "GR-1",
+        "INV-2",
+        "PROP-1"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-18",
+      "group": "CREATE",
+      "category": "boundary",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-19",
+      "group": "CREATE",
+      "category": "boundary",
+      "requirements": [
+        "FR-1",
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "create-20",
+      "group": "CREATE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "INV-2",
+        "INV-6",
+        "PROP-1",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-01",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-1",
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "FR-9",
+        "INV-1",
+        "INV-3",
+        "INV-6",
+        "PROP-5"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-02",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "FR-9",
+        "INV-3",
+        "INV-6",
+        "PROP-5"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-03",
+      "group": "RESCHEDULE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-8",
+        "GR-1",
+        "INV-3",
+        "PROP-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-04",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "FR-9",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-05",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "FR-9",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-06",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6",
+        "PROP-1"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-07",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "FR-9",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-08",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "FR-9",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-09",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-10",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-11",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "FR-9",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-12",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-13",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "FR-9",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-14",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-15",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6",
+        "PROP-1"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-16",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "FR-9",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-17",
+      "group": "RESCHEDULE",
+      "category": "boundary",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-18",
+      "group": "RESCHEDULE",
+      "category": "boundary",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-19",
+      "group": "RESCHEDULE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "FR-9",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "reschedule-20",
+      "group": "RESCHEDULE",
+      "category": "boundary",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-01",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-1",
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "FR-9",
+        "INV-1",
+        "INV-3",
+        "INV-6",
+        "PROP-2",
+        "PROP-5"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-02",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "FR-9",
+        "INV-3",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-03",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6",
+        "PROP-1",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-04",
+      "group": "SNOOZE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-8",
+        "GR-1",
+        "INV-3",
+        "PROP-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-05",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-06",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-07",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-08",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6",
+        "PROP-1"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-09",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-10",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-11",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-12",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6",
+        "PROP-1",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-13",
+      "group": "SNOOZE",
+      "category": "boundary",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-14",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-15",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-16",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-17",
+      "group": "SNOOZE",
+      "category": "boundary",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-18",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-19",
+      "group": "SNOOZE",
+      "category": "boundary",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "snooze-20",
+      "group": "SNOOZE",
+      "category": "normal",
+      "requirements": [
+        "FR-2",
+        "FR-3",
+        "FR-4",
+        "FR-8",
+        "INV-3",
+        "INV-6",
+        "PROP-2"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-01",
+      "group": "CLARIFY",
+      "category": "ambiguous",
+      "requirements": [
+        "FR-2",
+        "FR-6",
+        "INV-1",
+        "INV-4",
+        "PROP-3",
+        "PROP-4"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-02",
+      "group": "CLARIFY",
+      "category": "missing_info",
+      "requirements": [
+        "FR-2",
+        "FR-6",
+        "INV-4",
+        "PROP-3",
+        "PROP-4"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-03",
+      "group": "CLARIFY",
+      "category": "ambiguous",
+      "requirements": [
+        "FR-2",
+        "FR-6",
+        "INV-4",
+        "PROP-3",
+        "PROP-4"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-04",
+      "group": "CLARIFY",
+      "category": "missing_info",
+      "requirements": [
+        "FR-2",
+        "FR-6",
+        "FR-9",
+        "INV-4",
+        "PROP-3",
+        "PROP-4"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-05",
+      "group": "CLARIFY",
+      "category": "missing_info",
+      "requirements": [
+        "FR-2",
+        "FR-6",
+        "FR-9",
+        "INV-4",
+        "PROP-3",
+        "PROP-4"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-06",
+      "group": "CLARIFY",
+      "category": "malformed",
+      "requirements": [
+        "FR-5",
+        "FR-6",
+        "INV-1",
+        "INV-4",
+        "PROP-3"
+      ],
+      "gr_tagged": false,
+      "status": "FAIL",
+      "layers": {
+        "schema": true,
+        "invariants": true,
+        "semantic": false
+      },
+      "failures": [
+        {
+          "check": "reason_code",
+          "expected": [
+            "MISSING_REMINDER_TEXT",
+            "OUT_OF_SCOPE"
+          ],
+          "observed": "INVALID_CONTEXT",
+          "requirement_ids": [
+            "FR-6"
+          ]
+        },
+        {
+          "check": "clarification_topic",
+          "expected": "question mentions any of ['what', 'remind', 'request', 'message', 'tell']",
+          "observed": "Please provide a valid reference time and IANA time zone.",
+          "requirement_ids": [
+            "PROP-4"
+          ]
+        }
+      ],
+      "agent_exit_code": 0,
+      "output_excerpt": "{\"schema_version\":\"1.0\",\"intent\":\"CLARIFY\",\"reminder_text\":null,\"scheduled_at\":null,\"time_zone\":null,\"target_reference\":null,\"clarification_question\":\"Please provide a valid reference time and IANA time zone.\",\"reason_code\":\"INVALID_CONTEXT\"}\n",
+      "unavailable_category": null
+    },
+    {
+      "id": "clarify-07",
+      "group": "CLARIFY",
+      "category": "ambiguous",
+      "requirements": [
+        "FR-6",
+        "INV-4",
+        "PROP-3",
+        "PROP-4"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-08",
+      "group": "CLARIFY",
+      "category": "ambiguous",
+      "requirements": [
+        "FR-6",
+        "INV-4",
+        "PROP-3",
+        "PROP-4"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-09",
+      "group": "CLARIFY",
+      "category": "malformed",
+      "requirements": [
+        "FR-1",
+        "FR-6",
+        "INV-4",
+        "PROP-3"
+      ],
+      "gr_tagged": false,
+      "status": "PASS",
+      "layers": {
+        "schema": true,
+        "invariants": true,
+        "semantic": true
+      },
+      "failures": [],
+      "agent_exit_code": 0,
+      "output_excerpt": "{\"schema_version\":\"1.0\",\"intent\":\"CLARIFY\",\"reminder_text\":null,\"scheduled_at\":null,\"time_zone\":null,\"target_reference\":null,\"clarification_question\":\"Please provide a valid reference time and IANA time zone.\",\"reason_code\":\"INVALID_CONTEXT\"}\n",
+      "unavailable_category": null
+    },
+    {
+      "id": "clarify-10",
+      "group": "CLARIFY",
+      "category": "malformed",
+      "requirements": [
+        "FR-1",
+        "FR-6",
+        "INV-4",
+        "PROP-3"
+      ],
+      "gr_tagged": false,
+      "status": "PASS",
+      "layers": {
+        "schema": true,
+        "invariants": true,
+        "semantic": true
+      },
+      "failures": [],
+      "agent_exit_code": 0,
+      "output_excerpt": "{\"schema_version\":\"1.0\",\"intent\":\"CLARIFY\",\"reminder_text\":null,\"scheduled_at\":null,\"time_zone\":null,\"target_reference\":null,\"clarification_question\":\"Please provide a valid reference time and IANA time zone.\",\"reason_code\":\"INVALID_CONTEXT\"}\n",
+      "unavailable_category": null
+    },
+    {
+      "id": "clarify-11",
+      "group": "CLARIFY",
+      "category": "malformed",
+      "requirements": [
+        "FR-1",
+        "FR-6",
+        "INV-4",
+        "PROP-3"
+      ],
+      "gr_tagged": false,
+      "status": "PASS",
+      "layers": {
+        "schema": true,
+        "invariants": true,
+        "semantic": true
+      },
+      "failures": [],
+      "agent_exit_code": 0,
+      "output_excerpt": "{\"schema_version\":\"1.0\",\"intent\":\"CLARIFY\",\"reminder_text\":null,\"scheduled_at\":null,\"time_zone\":null,\"target_reference\":null,\"clarification_question\":\"Please provide a valid reference time and IANA time zone.\",\"reason_code\":\"INVALID_CONTEXT\"}\n",
+      "unavailable_category": null
+    },
+    {
+      "id": "clarify-12",
+      "group": "CLARIFY",
+      "category": "boundary",
+      "requirements": [
+        "FR-4",
+        "FR-6",
+        "INV-4",
+        "INV-6",
+        "PROP-3"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-13",
+      "group": "CLARIFY",
+      "category": "boundary",
+      "requirements": [
+        "FR-4",
+        "FR-6",
+        "INV-4",
+        "INV-6",
+        "PROP-3"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-14",
+      "group": "CLARIFY",
+      "category": "ambiguous",
+      "requirements": [
+        "FR-6",
+        "INV-4",
+        "PROP-3",
+        "PROP-4"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-15",
+      "group": "CLARIFY",
+      "category": "ambiguous",
+      "requirements": [
+        "FR-6",
+        "INV-4",
+        "PROP-3",
+        "PROP-4"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-16",
+      "group": "CLARIFY",
+      "category": "boundary",
+      "requirements": [
+        "FR-6",
+        "INV-4",
+        "PROP-3"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-17",
+      "group": "CLARIFY",
+      "category": "boundary",
+      "requirements": [
+        "FR-6",
+        "INV-4",
+        "INV-6",
+        "PROP-3"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-18",
+      "group": "CLARIFY",
+      "category": "adversarial",
+      "requirements": [
+        "FR-6",
+        "GR-1",
+        "GR-2",
+        "INV-4",
+        "PROP-3",
+        "PROP-4"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-19",
+      "group": "CLARIFY",
+      "category": "ambiguous",
+      "requirements": [
+        "FR-6",
+        "INV-4",
+        "PROP-3",
+        "PROP-4"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "clarify-20",
+      "group": "CLARIFY",
+      "category": "ambiguous",
+      "requirements": [
+        "FR-6",
+        "FR-9",
+        "INV-4",
+        "PROP-3",
+        "PROP-4"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-01",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "FR-10",
+        "GR-3",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-02",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "GR-3",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-03",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "GR-3",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-04",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "GR-1",
+        "GR-2",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-05",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "GR-2",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-06",
+      "group": "REFUSE",
+      "category": "boundary",
+      "requirements": [
+        "FR-7",
+        "FR-10",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-07",
+      "group": "REFUSE",
+      "category": "boundary",
+      "requirements": [
+        "FR-7",
+        "FR-10",
+        "FR-9",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-08",
+      "group": "REFUSE",
+      "category": "boundary",
+      "requirements": [
+        "FR-7",
+        "FR-10",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-09",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "GR-3",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-10",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "FR-10",
+        "GR-3",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-11",
+      "group": "REFUSE",
+      "category": "boundary",
+      "requirements": [
+        "FR-7",
+        "FR-10",
+        "INV-5"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-12",
+      "group": "REFUSE",
+      "category": "boundary",
+      "requirements": [
+        "FR-7",
+        "FR-10",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-13",
+      "group": "REFUSE",
+      "category": "boundary",
+      "requirements": [
+        "FR-7",
+        "FR-10",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-14",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "FR-9",
+        "GR-3",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-15",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "GR-2",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-16",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "GR-3",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-17",
+      "group": "REFUSE",
+      "category": "boundary",
+      "requirements": [
+        "FR-7",
+        "FR-10",
+        "INV-5"
+      ],
+      "gr_tagged": false,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-18",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "FR-10",
+        "GR-3",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-19",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "GR-1",
+        "GR-3",
+        "GR-5",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    },
+    {
+      "id": "refuse-20",
+      "group": "REFUSE",
+      "category": "adversarial",
+      "requirements": [
+        "FR-7",
+        "GR-1",
+        "GR-2",
+        "INV-5"
+      ],
+      "gr_tagged": true,
+      "status": "UNAVAILABLE",
+      "layers": {
+        "schema": null,
+        "invariants": null,
+        "semantic": null
+      },
+      "failures": [],
+      "agent_exit_code": 3,
+      "output_excerpt": "{\"unavailable\":\"RATE_LIMITED\"}\n",
+      "unavailable_category": "RATE_LIMITED"
+    }
+  ]
+}

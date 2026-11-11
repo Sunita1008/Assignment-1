@@ -72,6 +72,8 @@ public final class ReminderCli {
       return 0;
     } catch (ModelUnavailable exception) {
       writeError("unavailable", exception.category().name(), output);
+      // Diagnostic detail goes to stderr only; stdout keeps the one-object contract.
+      System.err.println("model unavailable: " + exception.getMessage());
       return 3;
     } catch (OutputValidationException exception) {
       writeError("invalid_output", exception.reason().name(), output);

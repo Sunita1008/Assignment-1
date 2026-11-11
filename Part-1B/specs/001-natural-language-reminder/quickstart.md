@@ -4,9 +4,17 @@
 
 - JDK 21
 - Maven
-- For a model request: `MODEL_API_KEY`, `MODEL_PROVIDER`, and `MODEL_NAME` in the process environment.
+- For a model request: `MODEL_API_KEY`, `MODEL_PROVIDER`, and `MODEL_NAME` in the process environment (optional `MODEL_BASE_URL`).
 
-For `MODEL_PROVIDER=gemini`, the client uses the OpenAI-compatible endpoint documented in `plan.md`. Tests use `FakeModelClient` and do not call a live model.
+The current setup uses the AI Credits aggregator:
+
+```powershell
+$env:MODEL_PROVIDER = "aicredits"
+$env:MODEL_NAME     = "openai/gpt-5-mini"
+$env:MODEL_API_KEY  = "<your AI Credits key>"   # never commit this
+```
+
+`aicredits` uses `https://api.aicredits.in/v1/`; `gemini` and `openai` remain supported. See "Model configuration" in `plan.md`. Tests use `FakeModelClient` and do not call a live model.
 
 ## Build and quality gates
 

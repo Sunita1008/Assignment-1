@@ -31,7 +31,20 @@ Build a stateless Java 21 reminder agent that accepts one user message, offset-b
 
 ## Model configuration
 
-Read `MODEL_API_KEY`, `MODEL_PROVIDER`, and `MODEL_NAME` from the environment. When `MODEL_PROVIDER=gemini`, use the OpenAI-compatible chat completions endpoint `https://generativelanguage.googleapis.com/v1beta/openai/`. Never log or write `MODEL_API_KEY`.
+Read `MODEL_API_KEY`, `MODEL_PROVIDER`, and `MODEL_NAME` from the environment, plus the optional `MODEL_BASE_URL`. All providers are reached through the OpenAI-compatible `chat/completions` endpoint. Never log or write `MODEL_API_KEY`.
+
+| `MODEL_PROVIDER` | Default base URL |
+|---|---|
+| `aicredits` | `https://api.aicredits.in/v1/` |
+| `gemini` | `https://generativelanguage.googleapis.com/v1beta/openai/` |
+| `openai` | `https://api.openai.com/v1/` |
+
+- `MODEL_BASE_URL`, when set, overrides the provider default. It must be an absolute `https` URL with a host; otherwise the agent reports `{"unavailable":"PROVIDER_PROTOCOL"}` (exit 3). A missing trailing slash is added.
+- `MODEL_PROVIDER` stays required because the harness records it in the run evidence.
+- Reasoning model families (`gpt-5*`, `o1*`, `o3*`, `o4*`, including a `vendor/` prefix such as `openai/gpt-5-mini`) accept only the default sampling temperature, so the request omits `temperature` for them; other models keep `temperature: 0`.
+- The request timeout is 60 seconds (connect timeout 5 seconds), because reasoning models take longer to answer.
+
+**Amendment (2026-11-12, before any scored run):** The provider changed from Gemini (`gemini-3.5-flash`) to the AI Credits aggregator (`MODEL_PROVIDER=aicredits`, `MODEL_NAME=openai/gpt-5-mini`). The Gemini free tier allowed only about 5 requests per minute and a small daily cap, so both evaluation attempts ended `BLOCKED_INCOMPLETE` (kept in `evidence/eval-runs/`). This is a configuration and transport change only. The spec, prompts, output contract, dataset, harness, and threshold are unchanged.
 
 ## Constitution Check
 

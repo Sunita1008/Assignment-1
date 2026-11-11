@@ -131,3 +131,11 @@
 - **US3**: Missing, invalid, conflicting, past, or ambiguous information clarifies without a guessed schedule; direct unsafe/out-of-scope requests refuse with the required null fields; safe reminder subjects remain parseable content.
 - **CLI**: Unavailable model/service produces one unavailable object and exit 3; invalid generated output produces one invalid-output object and exit 4; neither failure is converted to a successful intent.
 - **Harness boundary**: Java never loads `Part-1B/evals/dataset.json` and contains no evaluator, scoring component, evaluation command, or report writer. `.harness/` and `evals/` remain read-only.
+
+## Amendment 2026-11-12: provider switch to AI Credits
+
+Configuration-only change made before any scored run (see "Model configuration" in `plan.md`).
+
+- [x] T037 Extend `ModelConfigurationTest` for the `aicredits` provider, the `MODEL_BASE_URL` override (trailing-slash normalization, rejection of non-https or relative URLs), and the reasoning-model temperature rule.
+- [x] T038 Implement the `aicredits` provider (`https://api.aicredits.in/v1/`), the optional `MODEL_BASE_URL` override, and the reasoning-model temperature rule in `ModelConfiguration`. `HttpModelClient` omits `temperature` for reasoning models and uses a 60-second request timeout.
+- [ ] T039 Rebuild with `mvn clean verify`, then run the protected harness with `MODEL_PROVIDER=aicredits` and `MODEL_NAME=openai/gpt-5-mini` (requires the student's API key).
