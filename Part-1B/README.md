@@ -118,7 +118,7 @@ Each run's full report is in [evidence/eval-runs/](evidence/eval-runs/). The com
 - [evidence/final-generation/](evidence/final-generation/): the code that passed (identical to commit `115873f`).
 - [evidence/eval-runs/](evidence/eval-runs/): every evaluation run, including the blocked ones.
 - [evidence/eval-results.json](evidence/eval-results.json) and [evidence/repair-feedback.md](evidence/repair-feedback.md): the latest run's report and failure list.
-- `evidence/harness-log.md`: the run history and acceptance decision, written by the student.
+- [evidence/harness-log.md](evidence/harness-log.md): the run history, both failure and repair cycles, and the acceptance decision.
 
 ## Known limitations
 
